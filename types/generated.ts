@@ -1461,6 +1461,27 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/news/{article_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        /**
+         * Update Article
+         * @description Was previously missing entirely - a draft article had no way to be
+         *     published (or otherwise edited) via the API once created.
+         */
+        patch: operations["update_article_api_v1_news__article_id__patch"];
+        trace?: never;
+    };
     "/api/v1/news/{slug}": {
         parameters: {
             query?: never;
@@ -1907,7 +1928,12 @@ export interface paths {
         delete?: never;
         options?: never;
         head?: never;
-        /** Update Shop */
+        /**
+         * Update Shop
+         * @description Phone verification is enforced inside `service.update` only for the
+         *     owner-editing path - a moderator/admin (gated there by MARKETPLACE_MODERATE
+         *     instead) shouldn't need their own phone verified to approve/feature a shop.
+         */
         patch: operations["update_shop_api_v1_shops__shop_id__patch"];
         trace?: never;
     };
@@ -2849,8 +2875,9 @@ export interface components {
             /**
              * Status
              * @default published
+             * @enum {string}
              */
-            status: string;
+            status: "draft" | "published";
         };
         /** FaqResponse */
         FaqResponse: {
@@ -2881,7 +2908,7 @@ export interface components {
             /** Question En */
             question_en?: string | null;
             /** Status */
-            status?: string | null;
+            status?: ("draft" | "published") | null;
         };
         /** FavoriteResponse */
         FavoriteResponse: {
@@ -3391,8 +3418,9 @@ export interface components {
             /**
              * Status
              * @default draft
+             * @enum {string}
              */
-            status: string;
+            status: "draft" | "published";
             /** Summary */
             summary?: string | null;
             /** Tags */
@@ -3465,6 +3493,39 @@ export interface components {
             tags: string[] | null;
             /** Title */
             title: string;
+        };
+        /**
+         * NewsArticleUpdate
+         * @description Lets an admin publish a draft (or otherwise edit an article) - there
+         *     was previously no way to change an article after creation at all, even
+         *     though `list_all_for_admin`'s own docstring says a draft should be
+         *     "found and published again".
+         */
+        NewsArticleUpdate: {
+            /** Body */
+            body?: string | null;
+            /** Category */
+            category?: string | null;
+            /** Image */
+            image?: string | null;
+            /** Location Id */
+            location_id?: string | null;
+            /** Original Url */
+            original_url?: string | null;
+            /** Published At */
+            published_at?: string | null;
+            /** Slug */
+            slug?: string | null;
+            /** Source Id */
+            source_id?: string | null;
+            /** Status */
+            status?: ("draft" | "published") | null;
+            /** Summary */
+            summary?: string | null;
+            /** Tags */
+            tags?: string[] | null;
+            /** Title */
+            title?: string | null;
         };
         /** NewsSourceResponse */
         NewsSourceResponse: {
@@ -3774,7 +3835,7 @@ export interface components {
             /** Slug */
             slug?: string | null;
             /** Status */
-            status?: string | null;
+            status?: ("draft" | "published") | null;
         };
         /** ProductCreate */
         ProductCreate: {
@@ -4424,7 +4485,7 @@ export interface components {
             /** Required Documents */
             required_documents?: string[] | null;
             /** Status */
-            status?: string | null;
+            status?: ("draft" | "published") | null;
         };
         /**
          * SettingsUpdate
@@ -8057,6 +8118,41 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["NewsSourceResponse"][];
+                };
+            };
+        };
+    };
+    update_article_api_v1_news__article_id__patch: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                article_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["NewsArticleUpdate"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["NewsArticleResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
                 };
             };
         };
