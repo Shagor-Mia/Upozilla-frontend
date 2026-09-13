@@ -1,0 +1,23 @@
+"use client";
+
+import { useRouter } from "next/navigation";
+
+import { Button } from "@/components/ui/button";
+import { notifyAuthChanged } from "@/lib/auth-events";
+
+export function LogoutButton() {
+  const router = useRouter();
+
+  async function handleLogout() {
+    await fetch("/api/auth/logout", { method: "POST" });
+    notifyAuthChanged();
+    router.push("/");
+    router.refresh();
+  }
+
+  return (
+    <Button variant="ghost" size="sm" onClick={handleLogout}>
+      Sign out
+    </Button>
+  );
+}

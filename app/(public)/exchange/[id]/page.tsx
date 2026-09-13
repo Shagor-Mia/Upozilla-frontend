@@ -1,0 +1,49 @@
+import type { Metadata } from "next";
+import { notFound } from "next/navigation";
+
+import { ListingDetail } from "@/components/listings/ListingDetail";
+import { config } from "@/lib/config";
+import { formatPrice } from "@/lib/format";
+import { getExchangeListing, listingJsonLd } from "@/lib/listings";
+
+export async function generateMetadata(props: PageProps<"/exchange/[id]">): Promise<Metadata> {
+  const { id } = await props.params;
+  const listing = await getExchangeListing(id);
+  if (!listing) return {};
+
+  const description =
+    listing.description?.slice(0, 160) ??
+    `${listing.title} for ${formatPrice(listing.price, listing.currency)} in ${listing.location_name}`;
+
+  return {
+    title: `${listing.title} — ${formatPrice(listing.price, listing.currency)}`,
+    description,
+    alternates: { canonical: `/exchange/${listing.id}` },
+    openGraph: {
+      title: listing.title,
+      description,
+      type: "website",
+      images: listing.images.length ? [listing.images[0]] : undefined,
+      siteName: config.siteName,
+    },
+    twitter: { card: listing.images.length ? "summary_large_image" : "summary" },
+  };
+}
+
+export default async function ExchangeListingPage(props: PageProps<"/exchange/[id]">) {
+  const { id } = await props.params;
+  const listing = await getExchangeListing(id);
+  if (!listing) notFound();
+
+  return (
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(listingJsonLd(listing, `${config.siteUrl}/exchange/${listing.id}`)),
+        }}
+      />
+      <ListingDetail listing={listing} />
+    </>
+  );
+}

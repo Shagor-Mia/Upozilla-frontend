@@ -1,0 +1,248 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+@import "shadcn/tailwind.css";
+
+@custom-variant dark (&:is(.dark *));
+
+/*
+ * Civic Horizon design system — web_app_ui_ux_design/civic_horizon/DESIGN.md
+ * is the source of truth for every value below. Do not hand-tune a color or
+ * type scale here without updating that file first.
+ */
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-sans);
+  --font-bengali: var(--font-bengali);
+  --font-heading: var(--font-sans);
+  --color-sidebar-ring: var(--sidebar-ring);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar: var(--sidebar);
+  --color-chart-5: var(--chart-5);
+  --color-chart-4: var(--chart-4);
+  --color-chart-3: var(--chart-3);
+  --color-chart-2: var(--chart-2);
+  --color-chart-1: var(--chart-1);
+  --color-ring: var(--ring);
+  --color-input: var(--input);
+  --color-border: var(--border);
+  --color-destructive: var(--destructive);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-accent: var(--accent);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-muted: var(--muted);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-secondary: var(--secondary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-primary: var(--primary);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-popover: var(--popover);
+  --color-card-foreground: var(--card-foreground);
+  --color-card: var(--card);
+  --radius-sm: calc(var(--radius) * 0.5);
+  --radius-md: var(--radius);
+  --radius-lg: calc(var(--radius) * 1.5);
+  --radius-xl: calc(var(--radius) * 3);
+  --radius-2xl: calc(var(--radius) * 3.6);
+  --radius-3xl: calc(var(--radius) * 4.4);
+  --radius-4xl: calc(var(--radius) * 5.2);
+
+  /* Civic Horizon extended palette (DESIGN.md `colors`) */
+  --color-primary-container: var(--primary-container);
+  --color-on-primary-container: var(--on-primary-container);
+  --color-tertiary: var(--tertiary);
+  --color-on-tertiary: var(--on-tertiary);
+  --color-tertiary-container: var(--tertiary-container);
+  --color-on-tertiary-container: var(--on-tertiary-container);
+  --color-secondary-container: var(--secondary-container);
+  --color-on-secondary-container: var(--on-secondary-container);
+  --color-surface: var(--surface);
+  --color-surface-dim: var(--surface-dim);
+  --color-surface-bright: var(--surface-bright);
+  --color-surface-container-lowest: var(--surface-container-lowest);
+  --color-surface-container-low: var(--surface-container-low);
+  --color-surface-container: var(--surface-container);
+  --color-surface-container-high: var(--surface-container-high);
+  --color-surface-container-highest: var(--surface-container-highest);
+  --color-surface-variant: var(--surface-variant);
+  --color-surface-gray: var(--surface-gray);
+  --color-on-surface: var(--on-surface);
+  --color-on-surface-variant: var(--on-surface-variant);
+  --color-outline: var(--outline);
+  --color-outline-variant: var(--outline-variant);
+  --color-border-muted: var(--border-muted);
+  --color-inverse-surface: var(--inverse-surface);
+  --color-inverse-on-surface: var(--inverse-on-surface);
+  --color-inverse-primary: var(--inverse-primary);
+  --color-admin-blue: var(--admin-blue);
+  --color-success: var(--success);
+  --color-warning: var(--warning);
+  --color-on-success-container: var(--on-success-container);
+  --color-on-warning-container: var(--on-warning-container);
+  --color-error: var(--destructive);
+  --color-error-container: var(--error-container);
+  --color-on-error-container: var(--on-error-container);
+
+  /* Card elevation shared by every grid/list card (DESIGN.md "Elevation") */
+  --shadow-card: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+:root {
+  /* shadcn slots, bridged to Civic Horizon tokens */
+  --background: #f8fafc; /* surface-gray — "Floor" per DESIGN.md Elevation */
+  --foreground: #0b1c30; /* on-surface */
+  --card: #ffffff; /* surface-container-lowest */
+  --card-foreground: #0b1c30;
+  --popover: #ffffff;
+  --popover-foreground: #0b1c30;
+  --primary: #00503a;
+  --primary-foreground: #ffffff;
+  --secondary: #fdbc13; /* secondary-container (gold) — CTAs/highlights */
+  --secondary-foreground: #6b4d00; /* on-secondary-container */
+  --muted: #eff4ff; /* surface-container-low */
+  --muted-foreground: #3f4944; /* on-surface-variant */
+  --accent: #e5eeff; /* surface-container */
+  --accent-foreground: #0b1c30;
+  --destructive: #ef4444;
+  --border: #e2e8f0; /* border-muted */
+  --input: #e2e8f0;
+  --ring: #00503a;
+  --radius: 0.5rem;
+
+  /* Civic Horizon full palette */
+  --surface: #f8f9ff;
+  --surface-dim: #cbdbf5;
+  --surface-bright: #f8f9ff;
+  --surface-container-lowest: #ffffff;
+  --surface-container-low: #eff4ff;
+  --surface-container: #e5eeff;
+  --surface-container-high: #dce9ff;
+  --surface-container-highest: #d3e4fe;
+  --surface-variant: #d3e4fe;
+  --surface-gray: #f8fafc;
+  --on-surface: #0b1c30;
+  --on-surface-variant: #3f4944;
+  --inverse-surface: #213145;
+  --inverse-on-surface: #eaf1ff;
+  --inverse-primary: #83d7b4;
+  --outline: #6f7a73;
+  --outline-variant: #bec9c2;
+  --border-muted: #e2e8f0;
+  --primary-container: #006a4e;
+  --on-primary-container: #92e7c3;
+  --secondary-container: #fdbc13;
+  --on-secondary-container: #6b4d00;
+  --tertiary: #004f46;
+  --on-tertiary: #ffffff;
+  --tertiary-container: #1a685e;
+  --on-tertiary-container: #9ce4d7;
+  --admin-blue: #0284c7;
+  --success: #10b981;
+  --warning: #f59e0b;
+  --on-success-container: #065f46;
+  --on-warning-container: #92400e;
+  --error-container: #ffdad6;
+  --on-error-container: #93000a;
+
+  --chart-1: oklch(0.87 0 0);
+  --chart-2: oklch(0.556 0 0);
+  --chart-3: oklch(0.439 0 0);
+  --chart-4: oklch(0.371 0 0);
+  --chart-5: oklch(0.269 0 0);
+  --sidebar: #ffffff;
+  --sidebar-foreground: #0b1c30;
+  --sidebar-primary: #00503a;
+  --sidebar-primary-foreground: #ffffff;
+  --sidebar-accent: #e5eeff;
+  --sidebar-accent-foreground: #00503a;
+  --sidebar-border: #e2e8f0;
+  --sidebar-ring: #00503a;
+}
+
+.dark {
+  --background: #0b1c30;
+  --foreground: #eaf1ff;
+  --card: #213145;
+  --card-foreground: #eaf1ff;
+  --popover: #213145;
+  --popover-foreground: #eaf1ff;
+  --primary: #83d7b4;
+  --primary-foreground: #002116;
+  --secondary: #fdbc13;
+  --secondary-foreground: #261900;
+  --muted: #213145;
+  --muted-foreground: #bec9c2;
+  --accent: #1a685e;
+  --accent-foreground: #eaf1ff;
+  --destructive: #ef4444;
+  --border: rgba(255, 255, 255, 0.1);
+  --input: rgba(255, 255, 255, 0.15);
+  --ring: #83d7b4;
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+  html {
+    @apply font-sans;
+  }
+}
+
+/* Civic Horizon typography scale (DESIGN.md `typography`). Bangla script needs
+   ~10% more line-height than these Latin values at the same size — bump
+   line-height manually via a Tailwind leading-* override when pairing
+   .font-bengali with these classes on headline/body text. */
+@layer utilities {
+  .text-display-hero {
+    font-size: 48px;
+    font-weight: 800;
+    line-height: 56px;
+    letter-spacing: -0.02em;
+  }
+  .text-display-hero-mobile {
+    font-size: 32px;
+    font-weight: 800;
+    line-height: 40px;
+    letter-spacing: -0.01em;
+  }
+  .text-headline-lg {
+    font-size: 30px;
+    font-weight: 700;
+    line-height: 36px;
+  }
+  .text-headline-md {
+    font-size: 24px;
+    font-weight: 600;
+    line-height: 32px;
+  }
+  .text-body-lg {
+    font-size: 18px;
+    font-weight: 400;
+    line-height: 28px;
+  }
+  .text-body-md {
+    font-size: 16px;
+    font-weight: 400;
+    line-height: 24px;
+  }
+  .text-label-sm {
+    font-size: 14px;
+    font-weight: 500;
+    line-height: 20px;
+  }
+  .text-metadata {
+    font-size: 12px;
+    font-weight: 400;
+    line-height: 16px;
+    letter-spacing: 0.01em;
+  }
+}
