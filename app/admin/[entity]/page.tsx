@@ -57,12 +57,16 @@ export default async function AdminEntityListPage(props: PageProps<"/admin/[enti
 
   return (
     <div>
-      <div className="flex items-center justify-between gap-4">
+      {/* flex-wrap: entities with a `related` second button (e.g. Business ->
+          Verify businesses) used to get clipped past the viewport edge at
+          375px with nothing to wrap into (see the
+          mobile-responsiveness-audit memory, finding #9). */}
+      <div className="flex flex-wrap items-center justify-between gap-4">
         <div>
           <h1 className="text-headline-lg text-on-surface">{entityConfig.label}</h1>
           <p className="text-body-md mt-1 text-on-surface-variant">{entityConfig.description}</p>
         </div>
-        <div className="flex items-center gap-2">
+        <div className="flex flex-wrap items-center gap-2">
           {entityConfig.related && (
             <Button variant="outline" render={<Link href={entityConfig.related.href} />} nativeButton={false}>
               {entityConfig.related.label}

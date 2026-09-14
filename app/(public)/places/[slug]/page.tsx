@@ -1,10 +1,10 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 
-import { MapView } from "@/components/map/MapView";
+import { LazyMapView } from "@/components/map/LazyMapView";
 import { Badge } from "@/components/ui/badge";
 import { ApiNotFoundError, apiGet } from "@/lib/api-client";
-import { config } from "@/lib/config";
+import { getPublicSettings } from "@/lib/public-settings";
 import type { Place } from "@/types/api";
 
 async function getPlace(slug: string): Promise<Place | null> {
@@ -20,10 +20,10 @@ export async function generateMetadata(
   props: PageProps<"/places/[slug]">
 ): Promise<Metadata> {
   const { slug } = await props.params;
-  const place = await getPlace(slug);
+  const [place, { site_name }] = await Promise.all([getPlace(slug), getPublicSettings()]);
   if (!place) return {};
 
-  const description = place.description ?? `${place.name} — ${config.siteName}`;
+  const description = place.description ?? `${place.name} — ${site_name}`;
 
   return {
     title: place.name,
@@ -80,7 +80,7 @@ export default async function PlaceDetailPage(props: PageProps<"/places/[slug]">
         </p>
       )}
       {place.latitude != null && place.longitude != null && (
-        <MapView
+        <LazyMapView
           latitude={place.latitude}
           longitude={place.longitude}
           label={place.name}

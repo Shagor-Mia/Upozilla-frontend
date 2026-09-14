@@ -7,6 +7,8 @@ import type { PublicSettings } from "@/types/api";
  * plain-object default stays safe to import from a client component. */
 export const ENV_PUBLIC_SETTINGS: PublicSettings = {
   site_name: config.siteName,
+  site_url: config.siteUrl,
+  site_description: null,
   sms_demo_mode: true,
   turnstile_site_key: null,
   facebook_app_id: config.facebookAppId || null,

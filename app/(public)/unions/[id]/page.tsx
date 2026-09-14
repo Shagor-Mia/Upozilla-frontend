@@ -5,7 +5,7 @@ import { notFound } from "next/navigation";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardHeader, CardTitle } from "@/components/ui/card";
 import { apiGet } from "@/lib/api-client";
-import { config } from "@/lib/config";
+import { getPublicSettings } from "@/lib/public-settings";
 import type { Location, Paginated, Representative } from "@/types/api";
 
 const POSITION_LABEL: Record<string, string> = {
@@ -33,9 +33,9 @@ async function getUnion(id: string): Promise<Location | null> {
 
 export async function generateMetadata(props: PageProps<"/unions/[id]">): Promise<Metadata> {
   const { id } = await props.params;
-  const union = await getUnion(id);
+  const [union, { site_name }] = await Promise.all([getUnion(id), getPublicSettings()]);
   if (!union) return {};
-  return { title: union.name, description: `${union.name} — ${config.siteName}` };
+  return { title: union.name, description: `${union.name} — ${site_name}` };
 }
 
 export default async function UnionDetailPage(props: PageProps<"/unions/[id]">) {

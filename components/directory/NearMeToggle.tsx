@@ -85,7 +85,12 @@ export function NearMeToggle({ status, radius, error, onActivate, onRadiusChange
                   disabled={busy}
                   onClick={() => onRadiusChange(option)}
                   className={cn(
-                    "text-label-sm rounded-full px-3 py-1 transition-colors disabled:opacity-60",
+                    // pointer-coarse: touch-target floor for phones/tablets -
+                    // these were ~28-30px tall, under the 44px guideline, on
+                    // what's the primary filter control on every directory
+                    // page (see the mobile-responsiveness-audit memory,
+                    // finding #8).
+                    "text-label-sm rounded-full px-3 py-1 pointer-coarse:min-h-11 pointer-coarse:px-4 transition-colors disabled:opacity-60",
                     selected
                       ? "bg-primary text-primary-foreground"
                       : "bg-surface-container text-on-surface-variant hover:bg-surface-container-high"

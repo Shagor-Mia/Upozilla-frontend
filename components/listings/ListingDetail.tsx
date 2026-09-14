@@ -8,7 +8,7 @@ import { ListingViewTracker } from "@/components/listings/ListingViewTracker";
 import { PriceTag } from "@/components/listings/PriceTag";
 import { SellerCard } from "@/components/listings/SellerCard";
 import { StatusChip } from "@/components/listings/StatusChip";
-import { MapView } from "@/components/map/MapView";
+import { LazyMapView } from "@/components/map/LazyMapView";
 import { Badge } from "@/components/ui/badge";
 import { formatRelativeTime } from "@/lib/format";
 import type { Listing } from "@/types/api";
@@ -68,7 +68,7 @@ export async function ListingDetail({ listing }: { listing: Listing }) {
           </section>
 
           {listing.latitude != null && listing.longitude != null && (
-            <MapView latitude={listing.latitude} longitude={listing.longitude} label={listing.title} />
+            <LazyMapView latitude={listing.latitude} longitude={listing.longitude} label={listing.title} />
           )}
         </div>
 

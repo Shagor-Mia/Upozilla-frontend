@@ -10,6 +10,7 @@ import { useApiMutation } from "@/lib/use-api-mutation";
 import type { AdminSettingItem } from "@/types/api";
 
 const GROUP_LABEL_KEYS: Record<string, { titleKey: string; descriptionKey: string }> = {
+  general: { titleKey: "generalTitle", descriptionKey: "generalDescription" },
   sms: { titleKey: "smsTitle", descriptionKey: "smsDescription" },
   captcha: { titleKey: "captchaTitle", descriptionKey: "captchaDescription" },
   facebook: { titleKey: "facebookTitle", descriptionKey: "facebookDescription" },

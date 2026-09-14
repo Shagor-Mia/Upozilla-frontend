@@ -22,7 +22,10 @@ export default async function SellMarketplacePage() {
     getLocationOptions(),
     apiGet<Business[]>("/businesses", { revalidateSeconds: 60 }),
   ]);
-  const verified = session?.phoneVerified ?? false;
+  // Anyone can open and fill this form signed out - only submitting prompts
+  // sign-in, in place. An already-signed-in but unverified account is the one
+  // case pre-locked here.
+  const gateReason = session && !session.phoneVerified ? "verify" : null;
   const ownBusinesses = businesses.filter((business) => business.owner_user_id === session?.userId);
 
   return (
@@ -31,7 +34,7 @@ export default async function SellMarketplacePage() {
       <p className="text-body-md mt-1 text-on-surface-variant">
         {t("description")}
       </p>
-      <TrustGate locked={!verified} reason="verify" next="/sell/marketplace" className="mt-6">
+      <TrustGate locked={gateReason !== null} reason={gateReason ?? "signin"} className="mt-6">
         <div className="max-w-2xl rounded-xl border border-border-muted bg-surface-container-lowest p-6 shadow-card">
           <ListingForm listingType="marketplace" categories={categories} locations={locations} businesses={ownBusinesses} />
         </div>

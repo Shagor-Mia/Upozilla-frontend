@@ -33,9 +33,9 @@ function CardHeader({ className, ...props }: React.ComponentProps<"div">) {
   )
 }
 
-function CardTitle({ className, ...props }: React.ComponentProps<"div">) {
+function CardTitle({ className, ...props }: React.ComponentProps<"h3">) {
   return (
-    <div
+    <h3
       data-slot="card-title"
       className={cn(
         "font-heading text-base leading-snug font-medium group-data-[size=sm]/card:text-sm",
@@ -45,6 +45,12 @@ function CardTitle({ className, ...props }: React.ComponentProps<"div">) {
     />
   )
 }
+// (Was a plain `<div>` - card titles are entity names shown as grid items across
+// Home/PlaceGrid/BusinessGrid/etc., so they should be real headings for
+// document-outline/SEO/accessibility purposes; see
+// upazila-seo-aeo-geo-aio-sxo-audit memory, SEO+AIO findings. Every page that
+// uses CardTitle already has its own <h1>/<h2> elsewhere, so <h3> here is the
+// correct subordinate level.)
 
 function CardDescription({ className, ...props }: React.ComponentProps<"div">) {
   return (

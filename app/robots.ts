@@ -1,14 +1,15 @@
 import type { MetadataRoute } from "next";
 
-import { config } from "@/lib/config";
+import { getPublicSettings } from "@/lib/public-settings";
 
-export default function robots(): MetadataRoute.Robots {
+export default async function robots(): Promise<MetadataRoute.Robots> {
+  const { site_url: siteUrl } = await getPublicSettings();
   return {
     rules: {
       userAgent: "*",
       allow: "/",
       disallow: ["/dashboard/", "/admin/", "/api/"],
     },
-    sitemap: `${config.siteUrl}/sitemap.xml`,
+    sitemap: `${siteUrl}/sitemap.xml`,
   };
 }

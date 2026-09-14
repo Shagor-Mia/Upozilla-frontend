@@ -39,7 +39,10 @@ export default async function ConversationPage(props: PageProps<"/messages/[conv
         {t("backToMessages")}
       </Link>
       <div className="mt-3 flex flex-wrap items-baseline justify-between gap-2">
-        <h1 className="text-headline-lg text-on-surface">{conversation.other_party.full_name}</h1>
+        {/* min-w-0 + break-words: no guard previously existed for a long
+            display name against this row's flex-wrap sibling (see the
+            mobile-responsiveness-audit memory, finding #14). */}
+        <h1 className="text-headline-lg min-w-0 break-words text-on-surface">{conversation.other_party.full_name}</h1>
         {conversation.listing_title && (
           <Link
             href={listingHref(conversation.listing_type, conversation.listing_id)}

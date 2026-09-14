@@ -4,14 +4,15 @@ import { getTranslations } from "next-intl/server";
 import { PageHero } from "@/components/layout/PageHero";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { apiGet } from "@/lib/api-client";
-import { config } from "@/lib/config";
+import { getPublicSettings } from "@/lib/public-settings";
 import type { Paginated, Service } from "@/types/api";
 
 export async function generateMetadata(): Promise<Metadata> {
-  const t = await getTranslations("servicesList");
+  const [t, { site_name }] = await Promise.all([getTranslations("servicesList"), getPublicSettings()]);
   return {
     title: t("metaTitle"),
-    description: t("metaDescription", { siteName: config.siteName }),
+    description: t("metaDescription", { siteName: site_name }),
+    alternates: { canonical: "/services" },
   };
 }
 

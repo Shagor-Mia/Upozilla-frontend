@@ -4,14 +4,15 @@ import { getTranslations } from "next-intl/server";
 import { MarketGrid } from "@/components/directory/MarketGrid";
 import { PageHero } from "@/components/layout/PageHero";
 import { apiGet } from "@/lib/api-client";
-import { config } from "@/lib/config";
+import { getPublicSettings } from "@/lib/public-settings";
 import type { Market, Paginated } from "@/types/api";
 
 export async function generateMetadata(): Promise<Metadata> {
-  const t = await getTranslations("marketsList");
+  const [t, { site_name }] = await Promise.all([getTranslations("marketsList"), getPublicSettings()]);
   return {
     title: t("metaTitle"),
-    description: t("metaDescription", { siteName: config.siteName }),
+    description: t("metaDescription", { siteName: site_name }),
+    alternates: { canonical: "/markets" },
   };
 }
 

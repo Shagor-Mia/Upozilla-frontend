@@ -6,12 +6,12 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useState, type FormEvent } from "react";
 
+import { useAuthModal } from "@/components/auth/AuthModalProvider";
 import { TrustGate } from "@/components/listings/TrustGate";
 import { Button } from "@/components/ui/button";
 import { selectClass } from "@/components/ui/field-styles";
 import { trackEvent } from "@/lib/analytics";
-import { ClientApiError, clientApi } from "@/lib/client-api";
-import { listingHref } from "@/lib/format";
+import { clientApi } from "@/lib/client-api";
 import { useApiMutation } from "@/lib/use-api-mutation";
 import type { ContactReveal, Conversation, ListingType, ReportReason } from "@/types/api";
 
@@ -24,6 +24,10 @@ interface Session {
  * Buyer-side actions on a listing detail page: favorite, reveal phone, message
  * the seller, report. Session state is fetched client-side (like AuthNav) so the
  * page itself stays cacheable; the backend re-checks every gate server-side.
+ *
+ * Anyone can browse this page signed out. Trying one of these actions opens
+ * the in-place sign-in/verify-phone modal (AuthModalProvider) instead of
+ * navigating away - on success the exact action is resumed automatically.
  */
 export function ListingActions({
   listingType,
@@ -40,7 +44,7 @@ export function ListingActions({
 }) {
   const t = useTranslations("listingActions");
   const router = useRouter();
-  const href = listingHref(listingType, listingId);
+  const { handleAuthError } = useAuthModal();
 
   const REPORT_REASONS: { value: ReportReason; label: string }[] = [
     { value: "spam", label: t("reportReasonSpam") },
@@ -59,7 +63,7 @@ export function ListingActions({
   const [reporting, setReporting] = useState(false);
   const [reported, setReported] = useState(false);
 
-  useEffect(() => {
+  function loadSession() {
     let cancelled = false;
     fetch("/api/session")
       .then((res) => res.json())
@@ -84,28 +88,21 @@ export function ListingActions({
     return () => {
       cancelled = true;
     };
-  }, [listingType, listingId]);
+  }
 
-  /** Redirects instead of surfacing an error for the two gate failures every
-   * action here can hit. Returns true when it handled the error. */
-  function handleAuthRedirect(err: unknown): boolean | void {
-    if (err instanceof ClientApiError) {
-      if (err.isUnauthenticated) {
-        router.push(`/login?next=${encodeURIComponent(href)}`);
-        return true;
-      }
-      if (err.isPhoneVerificationRequired) {
-        router.push(`/verify-phone?next=${encodeURIComponent(href)}`);
-        return true;
-      }
-    }
+  useEffect(loadSession, [listingType, listingId]);
+
+  /** Refreshes the cached session (so gateReason/TrustGate/"is this your
+   * listing" all catch up) and, independently, retries `action` - `action`
+   * itself never gates on the (still-stale-for-a-tick) `session` state, only
+   * on the API's own 401/403, so this is safe to call before the refetch
+   * resolves. */
+  function refreshSessionThenRetry(action: () => void) {
+    loadSession();
+    action();
   }
 
   async function toggleFavorite() {
-    if (!session) {
-      router.push(`/login?next=${encodeURIComponent(href)}`);
-      return;
-    }
     await run(
       () => {
         const path = `exchange/favorites/${listingType}/${listingId}`;
@@ -114,7 +111,7 @@ export function ListingActions({
       {
         key: "favorite",
         fallbackError: t("couldNotUpdateFavorites"),
-        onError: handleAuthRedirect,
+        onError: (err) => handleAuthError(err, () => refreshSessionThenRetry(toggleFavorite)),
         onSuccess: () => {
           setFavorited(!favorited);
           setFavoritesCount((count) => count + (favorited ? -1 : 1));
@@ -129,7 +126,7 @@ export function ListingActions({
     await run(() => clientApi.post<ContactReveal>(path), {
       key: "contact",
       fallbackError: t("couldNotLoadContact"),
-      onError: handleAuthRedirect,
+      onError: (err) => handleAuthError(err, () => refreshSessionThenRetry(revealContact)),
       onSuccess: (result) => {
         setContact(result);
         trackEvent({ event: "listing_contact_click", listing_type: listingType, listing_id: listingId });
@@ -143,7 +140,7 @@ export function ListingActions({
       {
         key: "message",
         fallbackError: t("couldNotOpenConversation"),
-        onError: handleAuthRedirect,
+        onError: (err) => handleAuthError(err, () => refreshSessionThenRetry(messageSeller)),
         onSuccess: (conversation) => {
           trackEvent({ event: "listing_contact_click", listing_type: listingType, listing_id: listingId });
           router.push(`/messages/${conversation.id}`);
@@ -152,25 +149,24 @@ export function ListingActions({
     );
   }
 
-  async function submitReport(event: FormEvent<HTMLFormElement>) {
+  async function submitReport(reason: string, details: string | null) {
+    await run(() => clientApi.post(`exchange/reports/${listingType}/${listingId}`, { reason, details }), {
+      key: "report",
+      fallbackError: t("couldNotSubmitReport"),
+      onError: (err) => handleAuthError(err, () => refreshSessionThenRetry(() => submitReport(reason, details))),
+      onSuccess: () => {
+        setReported(true);
+        setReporting(false);
+      },
+    });
+  }
+
+  function handleReportSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     const formData = new FormData(event.currentTarget);
-    await run(
-      () =>
-        clientApi.post(`exchange/reports/${listingType}/${listingId}`, {
-          reason: formData.get("reason"),
-          details: String(formData.get("details") ?? "").trim() || null,
-        }),
-      {
-        key: "report",
-        fallbackError: t("couldNotSubmitReport"),
-        onError: handleAuthRedirect,
-        onSuccess: () => {
-          setReported(true);
-          setReporting(false);
-        },
-      }
-    );
+    const reason = String(formData.get("reason") ?? "");
+    const details = String(formData.get("details") ?? "").trim() || null;
+    void submitReport(reason, details);
   }
 
   if (session === undefined) {
@@ -188,11 +184,14 @@ export function ListingActions({
     );
   }
 
-  const gateReason = !session ? "signin" : !session.phoneVerified ? "verify" : null;
+  // Anonymous visitors see these buttons active, not locked - clicking one
+  // opens the sign-in modal in place and resumes the action. Only an
+  // already-signed-in but unverified account is pre-locked here.
+  const gateReason = session && !session.phoneVerified ? "verify" : null;
 
   return (
     <div className="space-y-4">
-      <TrustGate locked={gateReason !== null} reason={gateReason ?? "signin"} next={href}>
+      <TrustGate locked={gateReason !== null} reason={gateReason ?? "signin"}>
         <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
           <Button size="lg" className="rounded-xl" onClick={messageSeller} disabled={busy !== false}>
             <MessageSquare data-icon="inline-start" />
@@ -226,7 +225,7 @@ export function ListingActions({
           <Heart data-icon="inline-start" className={favorited ? "fill-current" : undefined} />
           {favorited ? t("saved") : t("save")} ({favoritesCount})
         </Button>
-        {session && !reported && (
+        {!reported && (
           <Button variant="ghost" size="sm" onClick={() => setReporting((open) => !open)}>
             <Flag data-icon="inline-start" />
             {t("report")}
@@ -236,7 +235,10 @@ export function ListingActions({
       </div>
 
       {reporting && (
-        <form onSubmit={submitReport} className="space-y-3 rounded-xl border border-border-muted bg-surface-container-lowest p-4">
+        <form
+          onSubmit={handleReportSubmit}
+          className="space-y-3 rounded-xl border border-border-muted bg-surface-container-lowest p-4"
+        >
           <label className="text-label-sm block text-on-surface">
             {t("reasonLabel")}
             <select name="reason" required className={`${selectClass} mt-1`} defaultValue="">

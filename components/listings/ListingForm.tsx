@@ -4,11 +4,12 @@ import { useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";
 import { type FormEvent } from "react";
 
+import { useAuthModal } from "@/components/auth/AuthModalProvider";
 import { ImageUploader } from "@/components/common/ImageUploader";
 import { Button } from "@/components/ui/button";
 import { inputClass, labelClass, selectClass } from "@/components/ui/field-styles";
 import { trackEvent } from "@/lib/analytics";
-import { ClientApiError, clientApi } from "@/lib/client-api";
+import { clientApi } from "@/lib/client-api";
 import { useApiMutation } from "@/lib/use-api-mutation";
 import type { Business, Listing, ListingType, MarketplaceCategory } from "@/types/api";
 
@@ -18,7 +19,12 @@ interface Option {
 }
 
 /** Create form shared by /sell/exchange and /sell/marketplace. Photos are URL
- * inputs for now - an upload/image CDN account is a later setup step. */
+ * inputs for now - an upload/image CDN account is a later setup step.
+ *
+ * The page itself is public - anyone can open and fill this form signed out.
+ * Submitting while unauthenticated or phone-unverified opens the in-place
+ * auth modal and resubmits the exact same payload once that's resolved,
+ * instead of bouncing to a separate page and losing the form. */
 export function ListingForm({
   listingType,
   categories,
@@ -32,9 +38,32 @@ export function ListingForm({
 }) {
   const t = useTranslations("listingForm");
   const router = useRouter();
+  const { handleAuthError } = useAuthModal();
   const { run, pending: submitting, error } = useApiMutation(t("errorGeneric"));
 
-  async function handleSubmit(event: FormEvent<HTMLFormElement>) {
+  async function submit(payload: Record<string, unknown>) {
+    await run(
+      () =>
+        listingType === "exchange"
+          ? clientApi.post<Listing>("exchange/listings", payload)
+          : clientApi.post<Listing>("marketplace/products", payload),
+      {
+        onSuccess: (created) => {
+          trackEvent({
+            event: "listing_created",
+            listing_type: listingType,
+            category: created.category_name,
+            value: created.price,
+          });
+          router.push("/account/listings?created=1");
+          router.refresh();
+        },
+        onError: (err) => handleAuthError(err, () => submit(payload)),
+      }
+    );
+  }
+
+  function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     const formData = new FormData(event.currentTarget);
     const text = (name: string) => String(formData.get(name) ?? "").trim();
@@ -55,30 +84,12 @@ export function ListingForm({
       longitude: text("longitude") ? Number(text("longitude")) : null,
     };
 
-    await run(
-      () =>
-        listingType === "exchange"
-          ? clientApi.post<Listing>("exchange/listings", { ...base, is_negotiable: formData.get("is_negotiable") === "on" })
-          : clientApi.post<Listing>("marketplace/products", { ...base, business_id: text("business_id") || null }),
-      {
-        onSuccess: (created) => {
-          trackEvent({
-            event: "listing_created",
-            listing_type: listingType,
-            category: created.category_name,
-            value: created.price,
-          });
-          router.push("/account/listings?created=1");
-          router.refresh();
-        },
-        onError: (err) => {
-          if (err instanceof ClientApiError && err.isPhoneVerificationRequired) {
-            router.push(`/verify-phone?next=/sell/${listingType}`);
-            return true;
-          }
-        },
-      }
-    );
+    const payload =
+      listingType === "exchange"
+        ? { ...base, is_negotiable: formData.get("is_negotiable") === "on" }
+        : { ...base, business_id: text("business_id") || null };
+
+    void submit(payload);
   }
 
   return (

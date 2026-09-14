@@ -62,7 +62,10 @@ export function ModerationQueue() {
 
   return (
     <div className="space-y-4">
-      <div role="tablist" className="flex gap-2">
+      {/* flex-wrap: "Rejected" used to get clipped off-screen at 375px with
+          no scroll hint that a third tab existed (see the
+          mobile-responsiveness-audit memory, finding #10). */}
+      <div role="tablist" className="flex flex-wrap gap-2">
         {TABS.map((option) => (
           <button
             key={option.value}
@@ -71,7 +74,7 @@ export function ModerationQueue() {
             aria-selected={tab === option.value}
             onClick={() => setTab(option.value)}
             className={cn(
-              "text-label-sm rounded-full border px-4 py-1.5 transition-colors",
+              "text-label-sm rounded-full border px-4 py-1.5 pointer-coarse:min-h-11 transition-colors",
               tab === option.value
                 ? "border-admin-blue bg-admin-blue text-white"
                 : "border-border-muted bg-surface-container-lowest text-on-surface-variant hover:border-admin-blue"

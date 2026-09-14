@@ -15,9 +15,13 @@ import type { OtpPurpose, OtpRequestResponse } from "@/types/api";
 
 interface OtpFormProps {
   purpose: OtpPurpose;
-  /** Where to go after the token pair lands in the cookies. */
+  /** Where to go after the token pair lands in the cookies. Ignored when
+   * `onSuccess` is provided. */
   next: string;
   submitLabel?: string;
+  /** Used by the auth modal instead of a page navigation: closes the modal
+   * and resumes whatever action triggered it, in place. */
+  onSuccess?: () => void;
 }
 
 /**
@@ -25,7 +29,7 @@ interface OtpFormProps {
  * verify step goes through `/api/auth/otp/verify` (not the generic proxy) so
  * the fresh JWT pair is written to the httpOnly cookies.
  */
-export function OtpForm({ purpose, next, submitLabel }: OtpFormProps) {
+export function OtpForm({ purpose, next, submitLabel, onSuccess }: OtpFormProps) {
   const t = useTranslations("otpForm");
   const router = useRouter();
   const [step, setStep] = useState<"phone" | "code">("phone");
@@ -85,8 +89,12 @@ export function OtpForm({ purpose, next, submitLabel }: OtpFormProps) {
     trackEvent({ event: "otp_verified", purpose });
     if (purpose === "register") trackEvent({ event: "signup", method: "otp" });
     notifyAuthChanged();
-    router.push(next);
-    router.refresh();
+    if (onSuccess) {
+      onSuccess();
+    } else {
+      router.push(next);
+      router.refresh();
+    }
   }
 
   if (step === "phone") {

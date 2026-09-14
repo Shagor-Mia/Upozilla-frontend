@@ -123,8 +123,10 @@ export function ChatWindow({ conversationId, currentUserId }: { conversationId: 
     }
   }
 
+  // min-h-[50vh] instead of a fixed 420px floor - see the
+  // mobile-responsiveness-audit memory, finding #11 (same fix as AskChat.tsx).
   return (
-    <div className="flex h-[60vh] min-h-[420px] flex-col rounded-xl border border-border-muted bg-surface-container-lowest shadow-card">
+    <div className="flex h-[60vh] min-h-[50vh] flex-col rounded-xl border border-border-muted bg-surface-container-lowest shadow-card">
       <div className="flex-1 space-y-2 overflow-y-auto p-4" role="log" aria-live="polite">
         {messages.length === 0 && (
           <p className="text-body-md py-8 text-center text-on-surface-variant">{t("noMessagesYet")}</p>

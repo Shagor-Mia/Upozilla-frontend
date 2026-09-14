@@ -16,12 +16,37 @@ import { Button } from "@/components/ui/button";
 import { trackEvent } from "@/lib/analytics";
 import { notifyAuthChanged } from "@/lib/auth-events";
 
-export function RegisterForm({ next }: { next: string }) {
+export function RegisterForm({
+  next,
+  variant = "page",
+  onSuccess,
+  onSwitchToLogin,
+}: {
+  next: string;
+  /** "modal" drops the full-page card chrome for use inside AuthModal. */
+  variant?: "page" | "modal";
+  /** Provided by AuthModal: closes the modal and resumes the action that
+   * triggered it, instead of navigating to `next`. */
+  onSuccess?: () => void;
+  /** Provided by AuthModal: switches the modal to the sign-in step instead
+   * of navigating to /login. */
+  onSwitchToLogin?: () => void;
+}) {
   const t = useTranslations("auth");
   const router = useRouter();
   const [method, setMethod] = useState<AuthMethod>("otp");
   const [error, setError] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
+
+  function finishSuccess() {
+    notifyAuthChanged();
+    if (onSuccess) {
+      onSuccess();
+    } else {
+      router.push(next);
+      router.refresh();
+    }
+  }
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -57,9 +82,7 @@ export function RegisterForm({ next }: { next: string }) {
     }
 
     trackEvent({ event: "signup", method: "password" });
-    notifyAuthChanged();
-    router.push(next);
-    router.refresh();
+    finishSuccess();
   }
 
   return (
@@ -67,19 +90,26 @@ export function RegisterForm({ next }: { next: string }) {
       icon={UserPlus}
       title={t("registerTitle")}
       description={t("registerDescription")}
+      variant={variant}
       footer={
         <>
           {t("haveAccount")}{" "}
-          <Link href="/login" className="font-semibold text-primary hover:underline">
-            {t("signInLink")}
-          </Link>
+          {onSwitchToLogin ? (
+            <button type="button" onClick={onSwitchToLogin} className="font-semibold text-primary hover:underline">
+              {t("signInLink")}
+            </button>
+          ) : (
+            <Link href="/login" className="font-semibold text-primary hover:underline">
+              {t("signInLink")}
+            </Link>
+          )}
         </>
       }
     >
       <AuthMethodTabs value={method} onChange={setMethod} />
 
       {method === "otp" ? (
-        <OtpForm purpose="register" next={next} submitLabel={t("createAccount")} />
+        <OtpForm purpose="register" next={next} submitLabel={t("createAccount")} onSuccess={onSuccess} />
       ) : (
         <form onSubmit={handleSubmit} className="space-y-4">
           <FormField label={t("fullNameLabel")} name="full_name" type="text" required autoFocus />
@@ -97,8 +127,8 @@ export function RegisterForm({ next }: { next: string }) {
       )}
 
       <div className="mt-4 space-y-2">
-        <GoogleLoginButton next={next} />
-        <FacebookLoginButton next={next} />
+        <GoogleLoginButton next={next} onSuccess={onSuccess} />
+        <FacebookLoginButton next={next} onSuccess={onSuccess} />
       </div>
     </AuthCard>
   );

@@ -5,7 +5,7 @@ import { notFound } from "next/navigation";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { apiGet } from "@/lib/api-client";
-import { config } from "@/lib/config";
+import { getPublicSettings } from "@/lib/public-settings";
 import type { Location, Paginated, Place, Representative } from "@/types/api";
 
 const POSITION_LABEL: Record<string, string> = {
@@ -26,9 +26,9 @@ export async function generateMetadata(
   props: PageProps<"/unions/[id]/villages/[villageId]">
 ): Promise<Metadata> {
   const { id, villageId } = await props.params;
-  const village = await getVillage(id, villageId);
+  const [village, { site_name }] = await Promise.all([getVillage(id, villageId), getPublicSettings()]);
   if (!village) return {};
-  return { title: village.name, description: `${village.name} — ${config.siteName}` };
+  return { title: village.name, description: `${village.name} — ${site_name}` };
 }
 
 export default async function VillageDetailPage(props: PageProps<"/unions/[id]/villages/[villageId]">) {

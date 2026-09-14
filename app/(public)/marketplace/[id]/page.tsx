@@ -2,13 +2,13 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 
 import { ListingDetail } from "@/components/listings/ListingDetail";
-import { config } from "@/lib/config";
 import { formatPrice } from "@/lib/format";
 import { getMarketplaceProduct, listingJsonLd } from "@/lib/listings";
+import { getPublicSettings } from "@/lib/public-settings";
 
 export async function generateMetadata(props: PageProps<"/marketplace/[id]">): Promise<Metadata> {
   const { id } = await props.params;
-  const product = await getMarketplaceProduct(id);
+  const [product, { site_name }] = await Promise.all([getMarketplaceProduct(id), getPublicSettings()]);
   if (!product) return {};
 
   const description =
@@ -24,7 +24,7 @@ export async function generateMetadata(props: PageProps<"/marketplace/[id]">): P
       description,
       type: "website",
       images: product.images.length ? [product.images[0]] : undefined,
-      siteName: config.siteName,
+      siteName: site_name,
     },
     twitter: { card: product.images.length ? "summary_large_image" : "summary" },
   };
@@ -32,7 +32,7 @@ export async function generateMetadata(props: PageProps<"/marketplace/[id]">): P
 
 export default async function MarketplaceProductPage(props: PageProps<"/marketplace/[id]">) {
   const { id } = await props.params;
-  const product = await getMarketplaceProduct(id);
+  const [product, { site_url }] = await Promise.all([getMarketplaceProduct(id), getPublicSettings()]);
   if (!product) notFound();
 
   return (
@@ -40,7 +40,7 @@ export default async function MarketplaceProductPage(props: PageProps<"/marketpl
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{
-          __html: JSON.stringify(listingJsonLd(product, `${config.siteUrl}/marketplace/${product.id}`)),
+          __html: JSON.stringify(listingJsonLd(product, `${site_url}/marketplace/${product.id}`)),
         }}
       />
       <ListingDetail listing={product} />

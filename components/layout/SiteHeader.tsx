@@ -4,10 +4,11 @@ import Link from "next/link";
 
 import { AuthNav } from "@/components/auth/AuthNav";
 import { LanguageSwitcher } from "@/components/layout/LanguageSwitcher";
-import { config } from "@/lib/config";
+import { MobileNav } from "@/components/layout/MobileNav";
+import { getPublicSettings } from "@/lib/public-settings";
 
 export async function SiteHeader() {
-  const t = await getTranslations("nav");
+  const [t, { site_name }] = await Promise.all([getTranslations("nav"), getPublicSettings()]);
   const navLinks = [
     { href: "/places", label: t("places") },
     { href: "/services", label: t("services") },
@@ -18,6 +19,7 @@ export async function SiteHeader() {
     { href: "/hospitals", label: t("hospitals") },
     { href: "/business", label: t("business") },
     { href: "/news", label: t("news") },
+    { href: "/faq", label: t("faq") },
   ];
 
   return (
@@ -25,7 +27,11 @@ export async function SiteHeader() {
       <div className="mx-auto flex h-16 max-w-[1280px] items-center justify-between gap-4 px-4 md:px-12">
         <Link href="/" className="flex shrink-0 items-center gap-2 text-primary">
           <Landmark size={28} strokeWidth={1.75} />
-          <span className="text-headline-md font-bold">{config.siteName}</span>
+          {/* Full name reappears from `sm:` up - below that it doesn't fit
+              alongside the language switcher + auth controls + menu trigger
+              without forcing the whole header past the viewport (see the
+              mobile-responsiveness-audit memory, finding #2). */}
+          <span className="hidden text-headline-md font-bold sm:inline">{site_name}</span>
         </Link>
         <nav className="hidden items-center gap-6 lg:flex">
           {navLinks.map((link) => (
@@ -41,6 +47,7 @@ export async function SiteHeader() {
         <div className="flex items-center gap-3">
           <LanguageSwitcher />
           <AuthNav />
+          <MobileNav links={navLinks} labels={{ openMenu: t("openMenu"), closeMenu: t("closeMenu") }} />
         </div>
       </div>
     </header>

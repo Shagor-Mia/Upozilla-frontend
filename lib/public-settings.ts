@@ -11,6 +11,8 @@ export async function getPublicSettings(): Promise<PublicSettings> {
     const remote = await apiGet<PublicSettings>("/settings/public", { revalidateSeconds: 60 });
     return {
       site_name: remote.site_name || ENV_PUBLIC_SETTINGS.site_name,
+      site_url: remote.site_url || ENV_PUBLIC_SETTINGS.site_url,
+      site_description: remote.site_description ?? ENV_PUBLIC_SETTINGS.site_description,
       sms_demo_mode: remote.sms_demo_mode,
       turnstile_site_key: remote.turnstile_site_key ?? ENV_PUBLIC_SETTINGS.turnstile_site_key,
       facebook_app_id: remote.facebook_app_id ?? ENV_PUBLIC_SETTINGS.facebook_app_id,

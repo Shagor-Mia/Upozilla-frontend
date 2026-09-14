@@ -3,11 +3,11 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 
-import { MapView } from "@/components/map/MapView";
+import { LazyMapView } from "@/components/map/LazyMapView";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ApiNotFoundError, apiGet } from "@/lib/api-client";
-import { config } from "@/lib/config";
+import { getPublicSettings } from "@/lib/public-settings";
 import type { Market, Paginated, Shop } from "@/types/api";
 
 async function getMarket(id: string): Promise<Market | null> {
@@ -21,12 +21,12 @@ async function getMarket(id: string): Promise<Market | null> {
 
 export async function generateMetadata(props: PageProps<"/markets/[id]">): Promise<Metadata> {
   const { id } = await props.params;
-  const market = await getMarket(id);
+  const [market, { site_name }] = await Promise.all([getMarket(id), getPublicSettings()]);
   if (!market) return {};
 
   return {
     title: market.name,
-    description: market.description ?? `${market.name} — ${config.siteName}`,
+    description: market.description ?? `${market.name} — ${site_name}`,
     alternates: { canonical: `/markets/${market.id}` },
   };
 }
@@ -85,7 +85,7 @@ export default async function MarketDetailPage(props: PageProps<"/markets/[id]">
       )}
 
       {market.latitude != null && market.longitude != null && (
-        <MapView latitude={market.latitude} longitude={market.longitude} label={market.name} className="mt-6" />
+        <LazyMapView latitude={market.latitude} longitude={market.longitude} label={market.name} className="mt-6" />
       )}
 
       {featured.length > 0 && (

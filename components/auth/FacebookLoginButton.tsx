@@ -32,7 +32,7 @@ declare global {
  * a Facebook App ID is configured (admin > Settings > Facebook, or
  * NEXT_PUBLIC_FACEBOOK_APP_ID).
  */
-export function FacebookLoginButton({ next }: { next: string }) {
+export function FacebookLoginButton({ next, onSuccess }: { next: string; onSuccess?: () => void }) {
   const t = useTranslations("auth");
   const router = useRouter();
   const [ready, setReady] = useState(false);
@@ -67,8 +67,12 @@ export function FacebookLoginButton({ next }: { next: string }) {
         }
         trackEvent({ event: "signup", method: "facebook" });
         notifyAuthChanged();
-        router.push(next);
-        router.refresh();
+        if (onSuccess) {
+          onSuccess();
+        } else {
+          router.push(next);
+          router.refresh();
+        }
       },
       { scope: "public_profile,email" }
     );

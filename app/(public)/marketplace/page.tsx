@@ -8,14 +8,15 @@ import { ListingFilters } from "@/components/listings/ListingFilters";
 import { ListingGrid } from "@/components/listings/ListingGrid";
 import { Pagination } from "@/components/listings/Pagination";
 import { Button } from "@/components/ui/button";
-import { config } from "@/lib/config";
 import { getCategories, getMarketplaceProducts, listingUrlParams } from "@/lib/listings";
+import { getPublicSettings } from "@/lib/public-settings";
 
 export async function generateMetadata(): Promise<Metadata> {
-  const t = await getTranslations("marketplacePage");
+  const [t, { site_name }] = await Promise.all([getTranslations("marketplacePage"), getPublicSettings()]);
   return {
     title: t("metaTitle"),
-    description: t("metaDescription", { siteName: config.siteName }),
+    description: t("metaDescription", { siteName: site_name }),
+    alternates: { canonical: "/marketplace" },
   };
 }
 

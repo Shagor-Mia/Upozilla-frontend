@@ -4,10 +4,11 @@ import { useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";
 import { type FormEvent } from "react";
 
+import { useAuthModal } from "@/components/auth/AuthModalProvider";
 import { ImageUploader } from "@/components/common/ImageUploader";
 import { Button } from "@/components/ui/button";
 import { inputClass, labelClass, selectClass } from "@/components/ui/field-styles";
-import { ClientApiError, clientApi } from "@/lib/client-api";
+import { clientApi } from "@/lib/client-api";
 import { useApiMutation } from "@/lib/use-api-mutation";
 import type { Shop, ShopCategory } from "@/types/api";
 
@@ -17,13 +18,28 @@ interface Option {
 }
 
 /** "সেল করুন > দোকান" - shopkeeper self-submits a shop inside a market, same
- * moderation-queue lifecycle as marketplace/exchange listings. */
+ * moderation-queue lifecycle as marketplace/exchange listings.
+ *
+ * The page is public - anyone can open and fill this form signed out.
+ * Submitting while unauthenticated or phone-unverified opens the in-place
+ * auth modal and resubmits the same payload once that's resolved. */
 export function ShopForm({ markets, categories }: { markets: Option[]; categories: ShopCategory[] }) {
   const t = useTranslations("shopForm");
   const router = useRouter();
+  const { handleAuthError } = useAuthModal();
   const { run, pending: submitting, error } = useApiMutation(t("errorGeneric"));
 
-  async function handleSubmit(event: FormEvent<HTMLFormElement>) {
+  async function submit(payload: Record<string, unknown>) {
+    await run(() => clientApi.post<Shop>("shops", payload), {
+      onSuccess: () => {
+        router.push("/account/shops?created=1");
+        router.refresh();
+      },
+      onError: (err) => handleAuthError(err, () => submit(payload)),
+    });
+  }
+
+  function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     const formData = new FormData(event.currentTarget);
     const text = (name: string) => String(formData.get(name) ?? "").trim();
@@ -32,29 +48,14 @@ export function ShopForm({ markets, categories }: { markets: Option[]; categorie
       .map((line) => line.trim())
       .filter(Boolean);
 
-    await run(
-      () =>
-        clientApi.post<Shop>("shops", {
-          market_id: text("market_id"),
-          category_id: text("category_id"),
-          name: text("name"),
-          description: text("description") || null,
-          contact_phone: text("contact_phone") || null,
-          images,
-        }),
-      {
-        onSuccess: () => {
-          router.push("/account/shops?created=1");
-          router.refresh();
-        },
-        onError: (err) => {
-          if (err instanceof ClientApiError && err.isPhoneVerificationRequired) {
-            router.push("/verify-phone?next=/sell/shop");
-            return true;
-          }
-        },
-      }
-    );
+    void submit({
+      market_id: text("market_id"),
+      category_id: text("category_id"),
+      name: text("name"),
+      description: text("description") || null,
+      contact_phone: text("contact_phone") || null,
+      images,
+    });
   }
 
   return (

@@ -35,7 +35,10 @@ export default function DashboardLayout({ children }: LayoutProps<"/">) {
             <Link
               key={link.href}
               href={link.href}
-              className="text-label-sm shrink-0 rounded-full border border-border-muted bg-surface-container-lowest px-4 py-1.5 text-on-surface-variant"
+              // pointer-coarse:py-3 brings this to a 44px touch target on
+              // phones/tablets (was ~34px) - see the
+              // mobile-responsiveness-audit memory, finding #15.
+              className="text-label-sm shrink-0 rounded-full border border-border-muted bg-surface-container-lowest px-4 py-1.5 pointer-coarse:py-3 text-on-surface-variant"
             >
               {link.label}
             </Link>

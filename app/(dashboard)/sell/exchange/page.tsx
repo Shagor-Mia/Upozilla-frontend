@@ -15,7 +15,10 @@ export async function generateMetadata(): Promise<Metadata> {
 export default async function SellExchangePage() {
   const t = await getTranslations("sellExchange");
   const [session, categories, locations] = await Promise.all([getSession(), getCategories(), getLocationOptions()]);
-  const verified = session?.phoneVerified ?? false;
+  // Anyone can open and fill this form signed out - only submitting prompts
+  // sign-in, in place. An already-signed-in but unverified account is the one
+  // case pre-locked here.
+  const gateReason = session && !session.phoneVerified ? "verify" : null;
 
   return (
     <div>
@@ -23,7 +26,7 @@ export default async function SellExchangePage() {
       <p className="text-body-md mt-1 text-on-surface-variant">
         {t("description")}
       </p>
-      <TrustGate locked={!verified} reason="verify" next="/sell/exchange" className="mt-6">
+      <TrustGate locked={gateReason !== null} reason={gateReason ?? "signin"} className="mt-6">
         <div className="max-w-2xl rounded-xl border border-border-muted bg-surface-container-lowest p-6 shadow-card">
           <ListingForm listingType="exchange" categories={categories} locations={locations} />
         </div>

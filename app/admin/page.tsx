@@ -40,7 +40,12 @@ export default async function AdminDashboardPage() {
           const card = (
             <Card className="h-full shadow-card transition-shadow hover:shadow-md">
               <CardHeader>
-                <CardTitle className="text-metadata font-semibold uppercase tracking-wider text-on-surface-variant">
+                {/* No tracking-wider + break-words: at 320px in this 2-col
+                    grid, the extra letter-spacing pushed labels like
+                    "PENDING MODERATION" wide enough to clip against the
+                    card's own overflow-hidden instead of wrapping (see the
+                    mobile-responsiveness-audit memory, finding #12). */}
+                <CardTitle className="text-metadata font-semibold uppercase break-words text-on-surface-variant">
                   {t(labelKey)}
                 </CardTitle>
               </CardHeader>

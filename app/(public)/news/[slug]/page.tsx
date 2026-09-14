@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 
 import { ApiNotFoundError, apiGet } from "@/lib/api-client";
-import { config } from "@/lib/config";
+import { getPublicSettings } from "@/lib/public-settings";
 import type { NewsArticleDetail } from "@/types/api";
 
 async function getArticle(slug: string): Promise<NewsArticleDetail | null> {
@@ -16,10 +16,10 @@ async function getArticle(slug: string): Promise<NewsArticleDetail | null> {
 
 export async function generateMetadata(props: PageProps<"/news/[slug]">): Promise<Metadata> {
   const { slug } = await props.params;
-  const article = await getArticle(slug);
+  const [article, { site_name }] = await Promise.all([getArticle(slug), getPublicSettings()]);
   if (!article) return {};
 
-  const description = article.summary ?? `${article.title} — ${config.siteName}`;
+  const description = article.summary ?? `${article.title} — ${site_name}`;
 
   return {
     title: article.title,

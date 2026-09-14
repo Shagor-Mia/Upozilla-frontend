@@ -6,10 +6,10 @@ import { getLocale } from "next-intl/server";
 import { ConsentBanner } from "@/components/analytics/ConsentBanner";
 import { GTMContainer } from "@/components/analytics/GTMContainer";
 import { AskWidget } from "@/components/ai/AskWidget";
+import { AuthModalProvider } from "@/components/auth/AuthModalProvider";
 import { SiteFooter } from "@/components/layout/SiteFooter";
 import { SiteHeader } from "@/components/layout/SiteHeader";
 import { PublicSettingsProvider } from "@/components/settings/PublicSettingsProvider";
-import { config } from "@/lib/config";
 import { getPublicSettings } from "@/lib/public-settings";
 
 import "./globals.css";
@@ -34,14 +34,52 @@ const notoSansArabic = Noto_Sans_Arabic({
   display: "swap",
 });
 
-export const metadata: Metadata = {
-  metadataBase: new URL(config.siteUrl),
-  title: {
-    default: config.siteName,
-    template: `%s | ${config.siteName}`,
-  },
-  description: `${config.siteName} — places, government services, weekly bazaar, hospitals, local business directory, and news, all in one place.`,
-};
+// `site_name`/`site_url`/`site_description` are admin-editable (Admin >
+// Settings > Site identity), DB-backed with an env fallback - same pattern as
+// gtm_id/mapbox_token (see upazila-seo-aeo-geo-aio-sxo-audit memory). Both
+// this and RootLayout below call getPublicSettings(); Next dedupes identical
+// fetches within one request, so it's a single network round trip.
+export async function generateMetadata(): Promise<Metadata> {
+  const { site_name, site_url, site_description } = await getPublicSettings();
+  const description =
+    site_description ||
+    `${site_name} — places, government services, weekly bazaar, hospitals, local business directory, and news, all in one place.`;
+
+  return {
+    metadataBase: new URL(site_url),
+    title: {
+      default: site_name,
+      template: `%s | ${site_name}`,
+    },
+    description,
+  };
+}
+
+// GEO/AIO: a single sitewide Organization+WebSite entity so AI/answer engines
+// have one canonical thing to anchor citations to, instead of only ever
+// seeing fragments of individual listing schema (see
+// upazila-seo-aeo-geo-aio-sxo-audit memory, GEO finding #1).
+function organizationJsonLd(siteName: string, siteUrl: string) {
+  return {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "Organization",
+        "@id": `${siteUrl}/#organization`,
+        name: siteName,
+        url: siteUrl,
+      },
+      {
+        "@type": "WebSite",
+        "@id": `${siteUrl}/#website`,
+        name: siteName,
+        url: siteUrl,
+        publisher: { "@id": `${siteUrl}/#organization` },
+        inLanguage: ["bn", "en", "ar"],
+      },
+    ],
+  };
+}
 
 export default async function RootLayout({ children }: LayoutProps<"/">) {
   // Integration keys live in the admin CMS (with env fallback) - fetched once
@@ -57,14 +95,22 @@ export default async function RootLayout({ children }: LayoutProps<"/">) {
       className={`${inter.variable} ${notoSansBengali.variable} ${notoSansArabic.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col font-sans">
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify(organizationJsonLd(publicSettings.site_name, publicSettings.site_url)),
+          }}
+        />
         <NextIntlClientProvider>
           <PublicSettingsProvider value={publicSettings}>
-            <SiteHeader />
-            <main className="flex-1">{children}</main>
-            <SiteFooter />
-            <ConsentBanner />
-            <GTMContainer />
-            <AskWidget />
+            <AuthModalProvider>
+              <SiteHeader />
+              <main className="flex-1">{children}</main>
+              <SiteFooter />
+              <ConsentBanner />
+              <GTMContainer />
+              <AskWidget />
+            </AuthModalProvider>
           </PublicSettingsProvider>
         </NextIntlClientProvider>
       </body>

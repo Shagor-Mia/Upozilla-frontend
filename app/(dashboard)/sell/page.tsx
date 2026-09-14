@@ -14,7 +14,10 @@ export async function generateMetadata(): Promise<Metadata> {
 export default async function SellPage() {
   const t = await getTranslations("sell");
   const session = await getSession();
-  const verified = session?.phoneVerified ?? false;
+  // Anonymous visitors can browse this page freely; only an already-signed-in
+  // but unverified account gets pre-locked here (a sign-in prompt appears
+  // in place when they actually try to choose an option, not before).
+  const gateReason = session && !session.phoneVerified ? "verify" : null;
 
   const OPTIONS = [
     {
@@ -43,7 +46,7 @@ export default async function SellPage() {
       <p className="text-body-md mt-1 text-on-surface-variant">
         {t("moderationNotice")}
       </p>
-      <TrustGate locked={!verified} reason="verify" next="/sell" className="mt-6">
+      <TrustGate locked={gateReason !== null} reason={gateReason ?? "signin"} className="mt-6">
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
           {OPTIONS.map((option) => (
             <Link

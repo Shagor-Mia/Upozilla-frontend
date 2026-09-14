@@ -3988,8 +3988,12 @@ export interface components {
             gtm_id: string | null;
             /** Mapbox Token */
             mapbox_token: string | null;
+            /** Site Description */
+            site_description: string | null;
             /** Site Name */
             site_name: string;
+            /** Site Url */
+            site_url: string;
             /** Sms Demo Mode */
             sms_demo_mode: boolean;
             /** Turnstile Site Key */

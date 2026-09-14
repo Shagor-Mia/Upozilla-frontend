@@ -43,7 +43,7 @@ declare global {
  * own button rather than a fully custom one, so this can't match the
  * Button component pixel-for-pixel - only theme/shape/width are tunable.
  */
-export function GoogleLoginButton({ next }: { next: string }) {
+export function GoogleLoginButton({ next, onSuccess }: { next: string; onSuccess?: () => void }) {
   const t = useTranslations("auth");
   const router = useRouter();
   const containerRef = useRef<HTMLDivElement>(null);
@@ -66,8 +66,12 @@ export function GoogleLoginButton({ next }: { next: string }) {
     }
     trackEvent({ event: "signup", method: "google" });
     notifyAuthChanged();
-    router.push(next);
-    router.refresh();
+    if (onSuccess) {
+      onSuccess();
+    } else {
+      router.push(next);
+      router.refresh();
+    }
   }
 
   return (

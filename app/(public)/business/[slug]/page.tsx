@@ -2,10 +2,10 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 
 import { VerifiedBadge } from "@/components/listings/VerifiedBadge";
-import { MapView } from "@/components/map/MapView";
+import { LazyMapView } from "@/components/map/LazyMapView";
 import { Badge } from "@/components/ui/badge";
 import { ApiNotFoundError, apiGet } from "@/lib/api-client";
-import { config } from "@/lib/config";
+import { getPublicSettings } from "@/lib/public-settings";
 import type { Business } from "@/types/api";
 
 async function getBusiness(slug: string): Promise<Business | null> {
@@ -21,10 +21,10 @@ export async function generateMetadata(
   props: PageProps<"/business/[slug]">
 ): Promise<Metadata> {
   const { slug } = await props.params;
-  const business = await getBusiness(slug);
+  const [business, { site_name }] = await Promise.all([getBusiness(slug), getPublicSettings()]);
   if (!business) return {};
 
-  const description = business.description ?? `${business.name} — ${config.siteName}`;
+  const description = business.description ?? `${business.name} — ${site_name}`;
 
   return {
     title: business.name,
@@ -85,7 +85,7 @@ export default async function BusinessDetailPage(props: PageProps<"/business/[sl
         {business.address && <p>Address: {business.address}</p>}
       </div>
       {business.latitude != null && business.longitude != null && (
-        <MapView
+        <LazyMapView
           latitude={business.latitude}
           longitude={business.longitude}
           label={business.name}

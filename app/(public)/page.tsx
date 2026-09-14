@@ -1,4 +1,5 @@
 import { Hospital, Landmark, Search, Store } from "lucide-react";
+import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
 import Link from "next/link";
 
@@ -8,7 +9,7 @@ import { ForYouSection } from "@/components/home/ForYouSection";
 import { ListingGrid } from "@/components/listings/ListingGrid";
 import { UpazilaHero3D } from "@/components/three/UpazilaHero3D";
 import { apiGet } from "@/lib/api-client";
-import { config } from "@/lib/config";
+import { getPublicSettings } from "@/lib/public-settings";
 import type {
   Business,
   ExchangeListing,
@@ -20,21 +21,76 @@ import type {
   Service,
 } from "@/types/api";
 
+const EMPTY_PAGE: Paginated<never> = { items: [], total: 0, page: 1, page_size: 0 };
+
+export async function generateMetadata(): Promise<Metadata> {
+  const [t, { site_name, site_description }] = await Promise.all([
+    getTranslations("home"),
+    getPublicSettings(),
+  ]);
+  // A dashboard-set default description (Admin > Settings > Site identity)
+  // wins over the hardcoded hero subtitle translation.
+  const description = site_description || t("heroSubtitle");
+
+  return {
+    // `absolute` bypasses the root layout's `%s | siteName` template - Home
+    // *is* the site, so titling it "siteName | siteName" would be redundant.
+    title: { absolute: site_name },
+    description,
+    alternates: { canonical: "/" },
+    openGraph: {
+      title: site_name,
+      description,
+      type: "website",
+      url: "/",
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: site_name,
+      description,
+    },
+  };
+}
+
+/** Lets one failing/slow backend call degrade to an empty section instead of
+ * throwing the whole homepage's Server Component render (surfaced to users
+ * as the generic "Minified React error #441" - see the
+ * upazila-redirect-hydration-investigation memory). Most likely trigger: a
+ * Render free-tier cold start (see upazila-free-hosting-setup memory) making
+ * one of the seven parallel calls below time out. Errors are still logged
+ * server-side so a real outage doesn't fail silently. */
+async function safe<T>(promise: Promise<T>, fallback: T, label: string): Promise<T> {
+  try {
+    return await promise;
+  } catch (error) {
+    console.error(`[home] failed to load ${label}`, error);
+    return fallback;
+  }
+}
+
 async function getLandingData() {
   const [places, services, markets, news, businesses, exchange, products] = await Promise.all([
-    apiGet<Paginated<Place>>("/places", { searchParams: { featured_only: "true" } }),
-    apiGet<Paginated<Service>>("/services"),
-    apiGet<Paginated<Market>>("/markets"),
-    apiGet<Paginated<NewsArticle>>("/news"),
-    apiGet<Business[]>("/businesses"),
-    apiGet<Paginated<ExchangeListing>>("/exchange/listings", {
-      revalidateSeconds: 60,
-      searchParams: { page_size: "4" },
-    }),
-    apiGet<Paginated<MarketplaceProduct>>("/marketplace/products", {
-      revalidateSeconds: 60,
-      searchParams: { page_size: "4" },
-    }),
+    safe(apiGet<Paginated<Place>>("/places", { searchParams: { featured_only: "true" } }), EMPTY_PAGE, "places"),
+    safe(apiGet<Paginated<Service>>("/services"), EMPTY_PAGE, "services"),
+    safe(apiGet<Paginated<Market>>("/markets"), EMPTY_PAGE, "markets"),
+    safe(apiGet<Paginated<NewsArticle>>("/news"), EMPTY_PAGE, "news"),
+    safe(apiGet<Business[]>("/businesses"), [], "businesses"),
+    safe(
+      apiGet<Paginated<ExchangeListing>>("/exchange/listings", {
+        revalidateSeconds: 60,
+        searchParams: { page_size: "4" },
+      }),
+      EMPTY_PAGE,
+      "exchange listings",
+    ),
+    safe(
+      apiGet<Paginated<MarketplaceProduct>>("/marketplace/products", {
+        revalidateSeconds: 60,
+        searchParams: { page_size: "4" },
+      }),
+      EMPTY_PAGE,
+      "marketplace products",
+    ),
   ]);
 
   return {
@@ -48,8 +104,11 @@ async function getLandingData() {
 }
 
 export default async function HomePage() {
-  const { places, services, markets, news, businesses, listings } = await getLandingData();
-  const t = await getTranslations("home");
+  const [{ places, services, markets, news, businesses, listings }, t, { site_name }] = await Promise.all([
+    getLandingData(),
+    getTranslations("home"),
+    getPublicSettings(),
+  ]);
 
   const QUICK_TAGS = [
     { href: "/hospitals", label: t("quickLinkHospitals"), icon: Hospital },
@@ -61,10 +120,10 @@ export default async function HomePage() {
     <div>
       <section className="relative flex min-h-[60vh] w-full items-center justify-center overflow-hidden border-b border-muted md:min-h-[70vh]">
         <UpazilaHero3D />
-        <div className="relative z-10 mx-auto mt-16 flex max-w-3xl flex-col items-center space-y-8 px-6 text-center md:mt-0">
+        <div className="relative z-10 mx-auto mt-16 flex w-full max-w-3xl flex-col items-center space-y-8 px-6 text-center md:mt-0">
           <div className="space-y-2">
             <h1 className="text-display-hero-mobile text-white md:text-display-hero">
-              {t("heroTitle")} <span className="text-inverse-primary">{config.siteName}</span>
+              {t("heroTitle")} <span className="text-inverse-primary">{site_name}</span>
             </h1>
             <p className="text-body-lg text-white/85">{t("heroSubtitle")}</p>
           </div>
@@ -78,7 +137,7 @@ export default async function HomePage() {
               name="q"
               type="text"
               placeholder={t("searchPlaceholder")}
-              className="text-body-md flex-grow border-none bg-transparent px-3 py-3 text-on-surface placeholder:text-outline-variant focus:outline-none focus:ring-0"
+              className="text-body-md min-w-0 flex-grow border-none bg-transparent px-3 py-3 text-on-surface placeholder:text-outline-variant focus:outline-none focus:ring-0"
             />
             <button
               type="submit"

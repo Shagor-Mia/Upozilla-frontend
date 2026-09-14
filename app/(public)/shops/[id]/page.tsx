@@ -5,7 +5,7 @@ import { notFound } from "next/navigation";
 import { ListingImage } from "@/components/listings/ListingImage";
 import { Badge } from "@/components/ui/badge";
 import { ApiNotFoundError, apiGet } from "@/lib/api-client";
-import { config } from "@/lib/config";
+import { getPublicSettings } from "@/lib/public-settings";
 import type { Shop } from "@/types/api";
 
 async function getShop(id: string): Promise<Shop | null> {
@@ -19,13 +19,21 @@ async function getShop(id: string): Promise<Shop | null> {
 
 export async function generateMetadata(props: PageProps<"/shops/[id]">): Promise<Metadata> {
   const { id } = await props.params;
-  const shop = await getShop(id);
+  const [shop, { site_name }] = await Promise.all([getShop(id), getPublicSettings()]);
   if (!shop) return {};
+
+  const description = shop.description ?? `${shop.name} — ${shop.market_name} — ${site_name}`;
 
   return {
     title: shop.name,
-    description: `${shop.name} — ${config.siteName}`,
+    description,
     alternates: { canonical: `/shops/${shop.id}` },
+    openGraph: {
+      title: shop.name,
+      description,
+      type: "website",
+      images: shop.images[0] ? [shop.images[0]] : undefined,
+    },
   };
 }
 
@@ -34,8 +42,25 @@ export default async function ShopDetailPage(props: PageProps<"/shops/[id]">) {
   const shop = await getShop(id);
   if (!shop) notFound();
 
+  // AIO/GEO: Store schema, mirroring business/[slug]/page.tsx's LocalBusiness
+  // block - shops previously had metadata but no structured data at all
+  // (upazila-seo-aeo-geo-aio-sxo-audit memory, AIO finding).
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "Store",
+    name: shop.name,
+    description: shop.description ?? undefined,
+    image: shop.images[0] ?? undefined,
+    telephone: shop.contact_phone ?? undefined,
+    branchOf: {
+      "@type": "LocalBusiness",
+      name: shop.market_name,
+    },
+  };
+
   return (
     <article className="mx-auto max-w-2xl px-4 py-8 md:px-12">
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
       <Badge variant="secondary">{shop.category_name}</Badge>
       <h1 className="mt-3 text-display-hero-mobile text-on-surface">{shop.name}</h1>
       <Link href={`/markets/${shop.market_id}`} className="text-label-sm text-primary hover:underline">
@@ -48,7 +73,10 @@ export default async function ShopDetailPage(props: PageProps<"/shops/[id]">) {
         <p className="mt-4 text-body-md text-on-surface">যোগাযোগ: {shop.contact_phone}</p>
       )}
 
-      <div className="mt-6 flex items-center gap-2 text-body-md text-on-surface-variant">
+      {/* flex-wrap: a long seller name + the verified badge had no wrap
+          fallback (see the mobile-responsiveness-audit memory, finding #13 -
+          matches the pattern SellerCard.tsx already uses). */}
+      <div className="mt-6 flex flex-wrap items-center gap-2 text-body-md text-on-surface-variant">
         <span>দোকানদার: {shop.seller.full_name}</span>
         {shop.seller.phone_verified && <Badge variant="secondary">ফোন যাচাইকৃত</Badge>}
       </div>

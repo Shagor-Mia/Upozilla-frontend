@@ -30,7 +30,11 @@ export function AskChat() {
       </div>
       <p className="text-body-md mb-6 text-on-surface-variant">{t("subtitle")}</p>
 
-      <div className="flex h-[60vh] min-h-[420px] flex-col rounded-xl border border-border-muted bg-surface-container-lowest shadow-card">
+      {/* min-h-[50vh] instead of a fixed 420px floor - that floor was taller
+          than 60vh on any phone under ~700px tall, forcing extra scroll to
+          reach the input on first load (see the mobile-responsiveness-audit
+          memory, finding #11). */}
+      <div className="flex h-[60vh] min-h-[50vh] flex-col rounded-xl border border-border-muted bg-surface-container-lowest shadow-card">
         <div className="flex-1 space-y-3 overflow-y-auto p-4" role="log" aria-live="polite">
           {turns.length === 0 && !pending && (
             <p className="text-body-md py-8 text-center text-on-surface-variant">{t("emptyState")}</p>

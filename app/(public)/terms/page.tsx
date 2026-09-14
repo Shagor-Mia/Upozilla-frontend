@@ -2,25 +2,25 @@ import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
 
 import { PageHero } from "@/components/layout/PageHero";
-import { config } from "@/lib/config";
+import { getPublicSettings } from "@/lib/public-settings";
 
 export async function generateMetadata(): Promise<Metadata> {
-  const t = await getTranslations("termsPage");
+  const [t, { site_name }] = await Promise.all([getTranslations("termsPage"), getPublicSettings()]);
   return {
     title: t("metaTitle"),
-    description: t("description", { siteName: config.siteName }),
+    description: t("description", { siteName: site_name }),
   };
 }
 
 export default async function TermsPage() {
-  const t = await getTranslations("termsPage");
+  const [t, { site_name }] = await Promise.all([getTranslations("termsPage"), getPublicSettings()]);
 
   return (
     <div className="mx-auto max-w-[1280px] px-4 py-8 md:px-12">
-      <PageHero title={t("title")} description={t("description", { siteName: config.siteName })} />
+      <PageHero title={t("title")} description={t("description", { siteName: site_name })} />
 
       <div className="mt-8 max-w-2xl space-y-6">
-        <p className="text-body-md text-on-surface-variant">{t("intro", { siteName: config.siteName })}</p>
+        <p className="text-body-md text-on-surface-variant">{t("intro", { siteName: site_name })}</p>
 
         <section className="space-y-1.5">
           <h2 className="text-headline-md text-on-surface">{t("accountHeading")}</h2>
@@ -34,7 +34,7 @@ export default async function TermsPage() {
 
         <section className="space-y-1.5">
           <h2 className="text-headline-md text-on-surface">{t("liabilityHeading")}</h2>
-          <p className="text-body-md text-on-surface-variant">{t("liabilityBody", { siteName: config.siteName })}</p>
+          <p className="text-body-md text-on-surface-variant">{t("liabilityBody", { siteName: site_name })}</p>
         </section>
 
         <section className="space-y-1.5">

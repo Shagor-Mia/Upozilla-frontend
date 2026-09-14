@@ -49,7 +49,7 @@ export default async function AdminBusinessesPage() {
 
   return (
     <div>
-      <div className="flex items-start justify-between gap-4">
+      <div className="flex flex-wrap items-start justify-between gap-4">
         <div>
           <h1 className="text-headline-lg text-on-surface">{t("businessVerification")}</h1>
           <p className="text-body-md mt-1 text-on-surface-variant">

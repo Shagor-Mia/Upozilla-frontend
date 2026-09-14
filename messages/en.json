@@ -8,7 +8,10 @@
     "hospitals": "Hospitals",
     "business": "Business",
     "news": "News",
-    "unions": "Unions"
+    "unions": "Unions",
+    "faq": "FAQ",
+    "openMenu": "Open menu",
+    "closeMenu": "Close menu"
   },
   "footer": {
     "communitySupport": "Community Support",
@@ -110,7 +113,8 @@
     "tryAgain": "Try again",
     "uploading": "Uploading…",
     "removeImage": "Remove image",
-    "uploadFailed": "Couldn't upload the image"
+    "uploadFailed": "Couldn't upload the image",
+    "close": "Close"
   },
   "account": {
     "title": "My account",
@@ -280,6 +284,13 @@
     "title": "Unions",
     "description": "Pick a union to see its villages and representatives.",
     "emptyState": "No unions found."
+  },
+  "faqPage": {
+    "metaTitle": "Frequently Asked Questions",
+    "metaDescription": "Common questions and answers about {siteName}.",
+    "title": "Frequently Asked Questions",
+    "description": "Answers to common questions about using the site.",
+    "emptyState": "No questions have been added yet."
   },
   "businessPage": {
     "metaTitle": "Local Business Directory",
@@ -494,6 +505,8 @@
     "cancel": "Cancel"
   },
   "settingsForm": {
+    "generalTitle": "Site identity",
+    "generalDescription": "Site name, URL, and default description — used in page titles, search engines, and shared-link previews.",
     "smsTitle": "SMS gateway (phone OTP)",
     "smsDescription": "Demo mode (console) shows the OTP code on screen instead of sending an SMS. Switch to http once you have a provider account.",
     "captchaTitle": "Cloudflare Turnstile",

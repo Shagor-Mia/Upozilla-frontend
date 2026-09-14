@@ -43,8 +43,12 @@ export function ListingFilters({ categories }: { categories: MarketplaceCategory
 
   return (
     <div className="space-y-4">
-      <form onSubmit={submitSearch} className="flex gap-2">
-        <label className="relative flex-1">
+      {/* Search gets its own full-width row below `sm:` - the sort/condition
+          selects used to share one un-wrapping row with it, squeezing the
+          search box down to an unreadable ~64px on a phone (see the
+          mobile-responsiveness-audit memory, finding #4). */}
+      <form onSubmit={submitSearch} className="flex flex-col gap-2 sm:flex-row">
+        <label className="relative min-w-0 flex-1">
           <Search className="pointer-events-none absolute top-1/2 start-4 -translate-y-1/2 text-outline" size={18} />
           <input
             type="search"
@@ -55,28 +59,30 @@ export function ListingFilters({ categories }: { categories: MarketplaceCategory
             className={cn(selectClass, "ps-11")}
           />
         </label>
-        <select
-          aria-label={t("sortAriaLabel")}
-          value={searchParams.get("sort") ?? "newest"}
-          onChange={(e) => router.push(withParam("sort", e.target.value === "newest" ? null : e.target.value))}
-          className={cn(selectClass, "w-auto")}
-        >
-          {SORT_OPTIONS.map((option) => (
-            <option key={option.value} value={option.value}>
-              {option.label}
-            </option>
-          ))}
-        </select>
-        <select
-          aria-label={t("conditionAriaLabel")}
-          value={searchParams.get("condition") ?? ""}
-          onChange={(e) => router.push(withParam("condition", e.target.value || null))}
-          className={cn(selectClass, "w-auto")}
-        >
-          <option value="">{t("anyCondition")}</option>
-          <option value="new">{t("conditionNew")}</option>
-          <option value="used">{t("conditionUsed")}</option>
-        </select>
+        <div className="flex gap-2">
+          <select
+            aria-label={t("sortAriaLabel")}
+            value={searchParams.get("sort") ?? "newest"}
+            onChange={(e) => router.push(withParam("sort", e.target.value === "newest" ? null : e.target.value))}
+            className={cn(selectClass, "min-w-0 flex-1 sm:w-auto sm:flex-none")}
+          >
+            {SORT_OPTIONS.map((option) => (
+              <option key={option.value} value={option.value}>
+                {option.label}
+              </option>
+            ))}
+          </select>
+          <select
+            aria-label={t("conditionAriaLabel")}
+            value={searchParams.get("condition") ?? ""}
+            onChange={(e) => router.push(withParam("condition", e.target.value || null))}
+            className={cn(selectClass, "min-w-0 flex-1 sm:w-auto sm:flex-none")}
+          >
+            <option value="">{t("anyCondition")}</option>
+            <option value="new">{t("conditionNew")}</option>
+            <option value="used">{t("conditionUsed")}</option>
+          </select>
+        </div>
       </form>
 
       <div className="flex flex-wrap gap-2">

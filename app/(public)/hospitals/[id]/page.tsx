@@ -2,11 +2,11 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { getTranslations } from "next-intl/server";
 
-import { MapView } from "@/components/map/MapView";
+import { LazyMapView } from "@/components/map/LazyMapView";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ApiNotFoundError, apiGet } from "@/lib/api-client";
-import { config } from "@/lib/config";
+import { getPublicSettings } from "@/lib/public-settings";
 import type { Doctor, Hospital } from "@/types/api";
 
 async function getHospital(id: string): Promise<Hospital | null> {
@@ -22,12 +22,12 @@ export async function generateMetadata(
   props: PageProps<"/hospitals/[id]">
 ): Promise<Metadata> {
   const { id } = await props.params;
-  const hospital = await getHospital(id);
+  const [hospital, { site_name }] = await Promise.all([getHospital(id), getPublicSettings()]);
   if (!hospital) return {};
 
   return {
     title: hospital.name,
-    description: `${hospital.name} — ${config.siteName}`,
+    description: `${hospital.name} — ${site_name}`,
     alternates: { canonical: `/hospitals/${hospital.id}` },
   };
 }
@@ -68,7 +68,7 @@ export default async function HospitalDetailPage(props: PageProps<"/hospitals/[i
       </div>
 
       {hospital.latitude != null && hospital.longitude != null && (
-        <MapView
+        <LazyMapView
           latitude={hospital.latitude}
           longitude={hospital.longitude}
           label={hospital.name}

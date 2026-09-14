@@ -2,13 +2,13 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 
 import { ListingDetail } from "@/components/listings/ListingDetail";
-import { config } from "@/lib/config";
 import { formatPrice } from "@/lib/format";
 import { getExchangeListing, listingJsonLd } from "@/lib/listings";
+import { getPublicSettings } from "@/lib/public-settings";
 
 export async function generateMetadata(props: PageProps<"/exchange/[id]">): Promise<Metadata> {
   const { id } = await props.params;
-  const listing = await getExchangeListing(id);
+  const [listing, { site_name }] = await Promise.all([getExchangeListing(id), getPublicSettings()]);
   if (!listing) return {};
 
   const description =
@@ -24,7 +24,7 @@ export async function generateMetadata(props: PageProps<"/exchange/[id]">): Prom
       description,
       type: "website",
       images: listing.images.length ? [listing.images[0]] : undefined,
-      siteName: config.siteName,
+      siteName: site_name,
     },
     twitter: { card: listing.images.length ? "summary_large_image" : "summary" },
   };
@@ -32,7 +32,7 @@ export async function generateMetadata(props: PageProps<"/exchange/[id]">): Prom
 
 export default async function ExchangeListingPage(props: PageProps<"/exchange/[id]">) {
   const { id } = await props.params;
-  const listing = await getExchangeListing(id);
+  const [listing, { site_url }] = await Promise.all([getExchangeListing(id), getPublicSettings()]);
   if (!listing) notFound();
 
   return (
@@ -40,7 +40,7 @@ export default async function ExchangeListingPage(props: PageProps<"/exchange/[i
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{
-          __html: JSON.stringify(listingJsonLd(listing, `${config.siteUrl}/exchange/${listing.id}`)),
+          __html: JSON.stringify(listingJsonLd(listing, `${site_url}/exchange/${listing.id}`)),
         }}
       />
       <ListingDetail listing={listing} />
