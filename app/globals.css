@@ -189,11 +189,19 @@
   * {
     @apply border-border outline-ring/50;
   }
-  body {
-    @apply bg-background text-foreground;
-  }
+  /* Last-resort guard, not the fix for any specific overflow: without this,
+     one component overflowing horizontally (like SiteHeader's nav row did -
+     see SiteHeader.tsx/MobileNav.tsx/AuthNav.tsx) turns into a page-wide
+     scrollbar on every route, since body/html have no block-formatting
+     boundary of their own to stop it at. With it, an unrelated future
+     regression degrades to "content clipped" instead of "whole site scrolls
+     sideways" - still a bug worth fixing, but a much smaller one. */
   html {
     @apply font-sans;
+    overflow-x: clip;
+  }
+  body {
+    @apply bg-background text-foreground;
   }
 }
 

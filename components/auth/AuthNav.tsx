@@ -120,15 +120,58 @@ export function AuthNav() {
   }
 
   if (!session) {
+    // Same split as the signed-in branch below: inline on `sm:`+ where two
+    // buttons plus the language switcher and menu trigger fit, collapsed into
+    // this drawer's trigger below `sm` where they didn't - live-measured,
+    // "Sign in" + "Register" + the language switcher + the hamburger trigger
+    // overflow a 320px viewport by ~35px with no fallback here, the one gap
+    // the mobile-responsiveness-audit fix (see SignedInActions above) missed.
     return (
-      <div className="flex items-center justify-end gap-1.5">
-        <Button render={<Link href="/login" />} nativeButton={false} variant="ghost" size="sm">
-          Sign in
-        </Button>
-        <Button render={<Link href="/register" />} nativeButton={false} size="sm">
-          Register
-        </Button>
-      </div>
+      <>
+        <div className="hidden items-center justify-end gap-1.5 sm:flex">
+          <Button render={<Link href="/login" />} nativeButton={false} variant="ghost" size="sm">
+            Sign in
+          </Button>
+          <Button render={<Link href="/register" />} nativeButton={false} size="sm">
+            Register
+          </Button>
+        </div>
+        <Sheet open={menuOpen} onOpenChange={setMenuOpen} swipeDirection="right">
+          <SheetTrigger
+            aria-label="Account menu"
+            className="flex size-11 items-center justify-center rounded-full text-on-surface-variant transition-colors hover:bg-surface-container hover:text-primary sm:hidden"
+          >
+            <UserCircle size={22} />
+          </SheetTrigger>
+          <SheetContent title="Account menu">
+            <div className="mb-2 flex items-center justify-end">
+              <SheetClose
+                aria-label="Close menu"
+                className="flex size-11 items-center justify-center rounded-full text-on-surface-variant transition-colors hover:bg-surface-container hover:text-primary"
+              >
+                <X size={22} />
+              </SheetClose>
+            </div>
+            <div className="flex flex-col gap-1">
+              <Button
+                render={<Link href="/login" onClick={() => setMenuOpen(false)} />}
+                nativeButton={false}
+                variant="ghost"
+                className="justify-start"
+              >
+                Sign in
+              </Button>
+              <Button
+                render={<Link href="/register" onClick={() => setMenuOpen(false)} />}
+                nativeButton={false}
+                className="justify-start"
+              >
+                Register
+              </Button>
+            </div>
+          </SheetContent>
+        </Sheet>
+      </>
     );
   }
 

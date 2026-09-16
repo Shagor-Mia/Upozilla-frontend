@@ -14,8 +14,16 @@ interface NavLink {
  * so every link (Places/Services/Markets/Marketplace/Exchange/Hospitals/
  * Business/News/Unions) was unreachable from the header below 1024px - the
  * majority of this site's traffic (see upazila-mobile-responsiveness-audit
- * and upazila-seo-aeo-geo-aio-sxo-audit memories, SXO finding). This renders
- * only below `lg` and closes itself on navigation or route change.
+ * and upazila-seo-aeo-geo-aio-sxo-audit memories, SXO finding).
+ *
+ * This must render below exactly the breakpoint where SiteHeader's inline
+ * `<nav>` turns on (`lg`, 1024px, see SiteHeader.tsx). A hamburger below that
+ * is expected mobile/tablet behavior; a hamburger on real laptop/desktop
+ * widths is not, which is why SiteHeader's row was tightened (gap, padding,
+ * nav font-size, wordmark hidden until `xl`) rather than just pushing this
+ * breakpoint out further - live-measured, that tightened row fits all 10
+ * links from 1024px up in bn/en/ar with real margin to spare. Closes itself
+ * on navigation or route change.
  */
 export function MobileNav({ links, labels }: { links: NavLink[]; labels: { openMenu: string; closeMenu: string } }) {
   const [open, setOpen] = useState(false);
@@ -46,7 +54,7 @@ export function MobileNav({ links, labels }: { links: NavLink[]; labels: { openM
       {open && (
         <nav
           aria-label={labels.openMenu}
-          className="absolute inset-x-0 top-16 z-40 flex flex-col gap-1 border-b border-muted bg-surface p-4 shadow-lg"
+          className="absolute inset-x-0 top-16 z-40 flex max-h-[calc(100vh-4rem)] flex-col gap-1 overflow-y-auto border-b border-muted bg-surface p-4 shadow-lg"
         >
           {links.map((link) => (
             <Link
