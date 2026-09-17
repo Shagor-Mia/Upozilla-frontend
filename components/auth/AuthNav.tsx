@@ -1,6 +1,6 @@
 "use client";
 
-import { MessageSquare, Sparkles, Tag, UserCircle, X } from "lucide-react";
+import { UserCircle, X } from "lucide-react";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 
@@ -18,15 +18,23 @@ interface Session {
   phoneVerified: boolean;
 }
 
-/** The signed-in action row (Admin/Messages/Ask AI/Account/Sell/Sign out) -
- * rendered twice below: inline on `sm:`+ screens where it fits, and stacked
- * inside a drawer below `sm` where it used to just force the whole header,
- * and therefore the whole page, wider than the viewport on every mobile
- * screen (see the mobile-responsiveness-audit memory, finding #2 - measured
- * up to 290px of real page overflow at 375px width). */
+/** The signed-in action row (Admin/Sign out) - rendered twice below: inline
+ * on `sm:`+ screens where it fits, and stacked inside a drawer below `sm`
+ * where it used to just force the whole header, and therefore the whole
+ * page, wider than the viewport on every mobile screen (see the
+ * mobile-responsiveness-audit memory, finding #2 - measured up to 290px of
+ * real page overflow at 375px width).
+ *
+ * Messages/Ask AI/Account/Sell used to be quick-access icons/buttons here
+ * too, on every public page site-wide - but that's the internal account area
+ * leaking into the marketing site's own header (2026-09-18 QA finding), and
+ * all four already have their own links in the `(dashboard)` sidebar. Reach
+ * them from there instead - `/sell` itself stays reachable to signed-out
+ * visitors too via the Places/Popular services/Schools nav dropdowns' own
+ * "add" links (see SiteHeader's addHref), so removing it here doesn't cut off
+ * the public "list your business" funnel. */
 function SignedInActions({ staff, stacked, onNavigate }: { staff: boolean; stacked?: boolean; onNavigate?: () => void }) {
   const rowClass = stacked ? "flex flex-col gap-1" : "flex items-center justify-end gap-1.5";
-  const linkSize = stacked ? "default" : "icon-sm";
 
   return (
     <div className={rowClass} onClick={onNavigate}>
@@ -41,45 +49,6 @@ function SignedInActions({ staff, stacked, onNavigate }: { staff: boolean; stack
           Admin
         </Button>
       )}
-      <Button
-        render={<Link href="/messages" aria-label="Messages" />}
-        nativeButton={false}
-        variant="ghost"
-        size={stacked ? "sm" : linkSize}
-        className={stacked ? "justify-start" : undefined}
-      >
-        <MessageSquare data-icon={stacked ? "inline-start" : undefined} />
-        {stacked && "Messages"}
-      </Button>
-      <Button
-        render={<Link href="/ask" aria-label="Ask AI" />}
-        nativeButton={false}
-        variant="ghost"
-        size={stacked ? "sm" : linkSize}
-        className={stacked ? "justify-start" : undefined}
-      >
-        <Sparkles data-icon={stacked ? "inline-start" : undefined} />
-        {stacked && "Ask AI"}
-      </Button>
-      <Button
-        render={<Link href="/account" aria-label="Account" />}
-        nativeButton={false}
-        variant="ghost"
-        size={stacked ? "sm" : linkSize}
-        className={stacked ? "justify-start" : undefined}
-      >
-        <UserCircle data-icon={stacked ? "inline-start" : undefined} />
-        {stacked && "Account"}
-      </Button>
-      <Button
-        render={<Link href="/sell" />}
-        nativeButton={false}
-        size="sm"
-        className={stacked ? "justify-start" : undefined}
-      >
-        <Tag data-icon="inline-start" />
-        Sell
-      </Button>
       <LogoutButton />
     </div>
   );

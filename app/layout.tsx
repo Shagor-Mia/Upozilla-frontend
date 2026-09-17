@@ -5,10 +5,7 @@ import { getLocale } from "next-intl/server";
 
 import { ConsentBanner } from "@/components/analytics/ConsentBanner";
 import { GTMContainer } from "@/components/analytics/GTMContainer";
-import { AskWidget } from "@/components/ai/AskWidget";
 import { AuthModalProvider } from "@/components/auth/AuthModalProvider";
-import { SiteFooter } from "@/components/layout/SiteFooter";
-import { SiteHeader } from "@/components/layout/SiteHeader";
 import { PublicSettingsProvider } from "@/components/settings/PublicSettingsProvider";
 import { getPublicSettings } from "@/lib/public-settings";
 
@@ -104,12 +101,14 @@ export default async function RootLayout({ children }: LayoutProps<"/">) {
         <NextIntlClientProvider>
           <PublicSettingsProvider value={publicSettings}>
             <AuthModalProvider>
-              <SiteHeader />
-              <main className="flex-1 pt-[78px]">{children}</main>
-              <SiteFooter />
+              {/* Visitor-facing chrome (floating nav, footer, "Ask AI" bubble)
+                  lives in `(public)`'s and `(auth)`'s own layout instead of
+                  here, so `/admin` and the `(dashboard)` account/seller area
+                  can render their own lean `InternalTopBar` instead of the
+                  full consumer nav. */}
+              {children}
               <ConsentBanner />
               <GTMContainer />
-              <AskWidget />
             </AuthModalProvider>
           </PublicSettingsProvider>
         </NextIntlClientProvider>

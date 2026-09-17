@@ -78,7 +78,9 @@ export async function getAdminNavLinks(): Promise<AdminNavLink[]> {
 export function AdminSidebar({ links }: { links: AdminNavLink[] }) {
   return (
     <aside className="hidden w-64 flex-shrink-0 border-e border-border-muted bg-surface-container-lowest md:block">
-      <nav className="sticky top-[78px] flex flex-col gap-1 p-4">
+      {/* top-16: sits right below `InternalTopBar` (h-16), which now scrolls
+          with the page instead of floating fixed above everything. */}
+      <nav className="sticky top-16 flex flex-col gap-1 p-4">
         {links.map((link) => (
           <Link
             key={link.href}
