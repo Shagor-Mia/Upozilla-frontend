@@ -6,13 +6,25 @@ import Link from "next/link";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useState, type FormEvent } from "react";
 
+import { LocationFilterSelect } from "@/components/listings/LocationFilterSelect";
 import { selectClass } from "@/components/ui/field-styles";
 import { cn } from "@/lib/utils";
 import type { ListingSort, MarketplaceCategory } from "@/types/api";
 
-/** Search + category chips + sort/condition selects, all reflected in the URL
- * so listing pages stay shareable and server-rendered. */
-export function ListingFilters({ categories }: { categories: MarketplaceCategory[] }) {
+interface LocationOption {
+  value: string;
+  label: string;
+}
+
+/** Search + category chips + sort/condition/location selects, all reflected
+ * in the URL so listing pages stay shareable and server-rendered. */
+export function ListingFilters({
+  categories,
+  locations,
+}: {
+  categories: MarketplaceCategory[];
+  locations: LocationOption[];
+}) {
   const t = useTranslations("listingFilters");
   const router = useRouter();
   const pathname = usePathname();
@@ -59,7 +71,7 @@ export function ListingFilters({ categories }: { categories: MarketplaceCategory
             className={cn(selectClass, "ps-11")}
           />
         </label>
-        <div className="flex gap-2">
+        <div className="flex flex-col gap-2 sm:flex-row">
           <select
             aria-label={t("sortAriaLabel")}
             value={searchParams.get("sort") ?? "newest"}
@@ -82,6 +94,11 @@ export function ListingFilters({ categories }: { categories: MarketplaceCategory
             <option value="new">{t("conditionNew")}</option>
             <option value="used">{t("conditionUsed")}</option>
           </select>
+          <LocationFilterSelect
+            locations={locations}
+            ariaLabel={t("locationAriaLabel")}
+            anyLabel={t("anyLocation")}
+          />
         </div>
       </form>
 

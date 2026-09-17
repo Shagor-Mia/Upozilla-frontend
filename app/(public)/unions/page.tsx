@@ -4,9 +4,8 @@ import { getTranslations } from "next-intl/server";
 
 import { PageHero } from "@/components/layout/PageHero";
 import { Card, CardHeader, CardTitle } from "@/components/ui/card";
-import { apiGet } from "@/lib/api-client";
+import { getUnions } from "@/lib/locations";
 import { getPublicSettings } from "@/lib/public-settings";
-import type { Location } from "@/types/api";
 
 export async function generateMetadata(): Promise<Metadata> {
   const [t, { site_name }] = await Promise.all([getTranslations("unionsPage"), getPublicSettings()]);
@@ -15,19 +14,6 @@ export async function generateMetadata(): Promise<Metadata> {
     description: t("metaDescription", { siteName: site_name }),
     alternates: { canonical: "/unions" },
   };
-}
-
-async function getUnions(): Promise<Location[]> {
-  const upazilas = await apiGet<Location[]>("/locations", {
-    revalidateSeconds: 3600,
-    searchParams: { type: "upazila" },
-  });
-  const upazila = upazilas[0];
-  if (!upazila) return [];
-  return apiGet<Location[]>("/locations", {
-    revalidateSeconds: 3600,
-    searchParams: { type: "union", parent_id: upazila.id },
-  });
 }
 
 export default async function UnionsPage() {

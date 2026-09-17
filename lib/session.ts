@@ -9,6 +9,10 @@ export interface Session {
   roles: string[];
   /** UX hint from the JWT claim - the backend re-checks the DB on every gated write. */
   phoneVerified: boolean;
+  /** UX hint from the JWT claim - admin-granted, see admin/users' hospital permission toggle. */
+  canManageHospital: boolean;
+  /** UX hint from the JWT claim - admin-granted, see admin/users' school permission toggle. */
+  canManageSchool: boolean;
 }
 
 function base64UrlDecode(input: string): string {
@@ -22,6 +26,8 @@ interface AccessTokenPayload {
   role?: string | null;
   roles?: string[];
   phone_verified?: boolean;
+  can_manage_hospital?: boolean;
+  can_manage_school?: boolean;
   exp: number;
 }
 
@@ -53,6 +59,8 @@ export async function getSession(): Promise<Session | null> {
     role,
     roles: payload.roles ?? (role ? [role] : []),
     phoneVerified: payload.phone_verified ?? false,
+    canManageHospital: payload.can_manage_hospital ?? false,
+    canManageSchool: payload.can_manage_school ?? false,
   };
 }
 

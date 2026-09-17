@@ -14,6 +14,7 @@ export async function getPublicSettings(): Promise<PublicSettings> {
       site_url: remote.site_url || ENV_PUBLIC_SETTINGS.site_url,
       site_description: remote.site_description ?? ENV_PUBLIC_SETTINGS.site_description,
       sms_demo_mode: remote.sms_demo_mode,
+      otp_login_enabled: remote.otp_login_enabled,
       turnstile_site_key: remote.turnstile_site_key ?? ENV_PUBLIC_SETTINGS.turnstile_site_key,
       facebook_app_id: remote.facebook_app_id ?? ENV_PUBLIC_SETTINGS.facebook_app_id,
       google_client_id: remote.google_client_id ?? ENV_PUBLIC_SETTINGS.google_client_id,

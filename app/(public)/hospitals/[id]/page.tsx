@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import { getTranslations } from "next-intl/server";
 
 import { LazyMapView } from "@/components/map/LazyMapView";
+import { ListingImage } from "@/components/listings/ListingImage";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ApiNotFoundError, apiGet } from "@/lib/api-client";
@@ -64,8 +65,26 @@ export default async function HospitalDetailPage(props: PageProps<"/hospitals/[i
       <h1 className="mt-3 text-display-hero-mobile text-on-surface">{hospital.name}</h1>
       <div className="mt-4 space-y-1 text-body-md text-on-surface-variant">
         {hospital.address && <p>{hospital.address}</p>}
-        {hospital.contact && <p>{hospital.contact}</p>}
+        {hospital.contact && <p>{t("hotline", { contact: hospital.contact })}</p>}
       </div>
+
+      {hospital.services && hospital.services.length > 0 && (
+        <div className="mt-4 flex flex-wrap gap-2">
+          {hospital.services.map((service) => (
+            <Badge key={service} variant="secondary">
+              {service}
+            </Badge>
+          ))}
+        </div>
+      )}
+
+      {hospital.images && hospital.images.length > 0 && (
+        <div className="mt-6 grid grid-cols-2 gap-3 sm:grid-cols-3">
+          {hospital.images.map((image, index) => (
+            <ListingImage key={image} src={image} alt={`${hospital.name} ${index + 1}`} />
+          ))}
+        </div>
+      )}
 
       {hospital.latitude != null && hospital.longitude != null && (
         <LazyMapView

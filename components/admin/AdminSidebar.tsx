@@ -8,11 +8,13 @@ import {
   LayoutDashboard,
   Newspaper,
   Repeat,
+  School,
   ScrollText,
   Settings,
   ShoppingBag,
   Store,
   Users,
+  Warehouse,
   type LucideIcon,
 } from "lucide-react";
 import Link from "next/link";
@@ -36,7 +38,10 @@ const LINKS: SidebarLink[] = [
   { href: "/admin/places", label: "Places", icon: LandmarkIcon },
   { href: "/admin/services", label: "Services", icon: LandmarkIcon },
   { href: "/admin/hospitals", label: "Hospitals", icon: Hospital },
+  { href: "/admin/schools", label: "Schools", icon: School },
+  { href: "/admin/govt-offices", label: "Government offices", icon: LandmarkIcon },
   { href: "/admin/markets", label: "Markets", icon: Store },
+  { href: "/admin/shops", label: "Shops", icon: Warehouse },
   { href: "/admin/business", label: "Businesses", icon: Building2 },
   { href: "/admin/businesses", label: "Verify businesses", icon: BadgeCheck, permission: "business.verify" },
   { href: "/admin/news", label: "News", icon: Newspaper },
@@ -73,7 +78,7 @@ export async function getAdminNavLinks(): Promise<AdminNavLink[]> {
 export function AdminSidebar({ links }: { links: AdminNavLink[] }) {
   return (
     <aside className="hidden w-64 flex-shrink-0 border-e border-border-muted bg-surface-container-lowest md:block">
-      <nav className="sticky top-16 flex flex-col gap-1 p-4">
+      <nav className="sticky top-[78px] flex flex-col gap-1 p-4">
         {links.map((link) => (
           <Link
             key={link.href}

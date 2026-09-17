@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 
+import { ListingImage } from "@/components/listings/ListingImage";
 import { VerifiedBadge } from "@/components/listings/VerifiedBadge";
 import { LazyMapView } from "@/components/map/LazyMapView";
 import { Badge } from "@/components/ui/badge";
@@ -18,7 +19,7 @@ async function getBusiness(slug: string): Promise<Business | null> {
 }
 
 export async function generateMetadata(
-  props: PageProps<"/business/[slug]">
+  props: PageProps<"/popular-services/[slug]">
 ): Promise<Metadata> {
   const { slug } = await props.params;
   const [business, { site_name }] = await Promise.all([getBusiness(slug), getPublicSettings()]);
@@ -29,7 +30,7 @@ export async function generateMetadata(
   return {
     title: business.name,
     description,
-    alternates: { canonical: `/business/${business.slug}` },
+    alternates: { canonical: `/popular-services/${business.slug}` },
     openGraph: {
       title: business.name,
       description,
@@ -39,7 +40,7 @@ export async function generateMetadata(
   };
 }
 
-export default async function BusinessDetailPage(props: PageProps<"/business/[slug]">) {
+export default async function PopularServiceDetailPage(props: PageProps<"/popular-services/[slug]">) {
   const { slug } = await props.params;
   const business = await getBusiness(slug);
   if (!business) notFound();
@@ -91,6 +92,13 @@ export default async function BusinessDetailPage(props: PageProps<"/business/[sl
           label={business.name}
           className="mt-6"
         />
+      )}
+      {business.images && business.images.length > 0 && (
+        <div className="mt-6 grid grid-cols-2 gap-3 sm:grid-cols-3">
+          {business.images.map((src) => (
+            <ListingImage key={src} src={src} alt={business.name} className="rounded-xl" />
+          ))}
+        </div>
       )}
     </article>
   );

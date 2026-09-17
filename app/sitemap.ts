@@ -19,10 +19,11 @@ const STATIC_ROUTES = [
   "/services",
   "/markets",
   "/hospitals",
-  "/business",
+  "/popular-services",
+  "/shops",
+  "/govt-info",
   "/news",
   "/marketplace",
-  "/exchange",
   "/unions",
   "/faq",
 ];
@@ -108,7 +109,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   }));
 
   const businessEntries: MetadataRoute.Sitemap = businesses.map((business) => ({
-    url: `${siteUrl}/business/${business.slug}`,
+    url: `${siteUrl}/popular-services/${business.slug}`,
     changeFrequency: "weekly",
     priority: 0.5,
   }));

@@ -1,12 +1,14 @@
 {
   "nav": {
     "places": "স্থান",
-    "services": "সেবা",
+    "services": "জনপ্রিয় সেবা",
     "bazaar": "হাট-বাজার",
     "marketplace": "মার্কেটপ্লেস",
     "exchange": "বিনিময়",
     "hospitals": "হাসপাতাল",
-    "business": "ব্যবসা",
+    "ambulance": "অ্যাম্বুলেন্স",
+    "shops": "দোকান",
+    "schools": "স্কুল",
     "news": "খবর",
     "unions": "ইউনিয়ন",
     "faq": "প্রশ্নোত্তর",
@@ -198,7 +200,12 @@
     "marketplaceTitle": "মার্কেটপ্লেস পণ্য",
     "marketplaceDescription": "আপনার দোকান বা ব্যবসার একটি পণ্য তালিকাভুক্ত করুন, যাতে স্থানীয় ক্রেতারা খুঁজে পান।",
     "shopTitle": "দোকান",
-    "shopDescription": "বাজারের তালিকায় আপনার দোকান যুক্ত করুন।"
+    "shopDescription": "আপনার দোকান যুক্ত করুন — কোনো নির্দিষ্ট বাজারের ভেতরে অথবা স্বতন্ত্রভাবে যেকোনো জায়গায়।",
+    "placeTitle": "জায়গা যোগ করুন",
+    "placeDescription": "এই এলাকার কোনো ঘুরার জায়গা, রেস্টুরেন্ট, পার্ক বা অন্য কোনো স্থান সাজেস্ট করুন।",
+    "businessTitle": "সেবা যোগ করুন",
+    "businessDescription": "ব্যাংক, এটিএম, মোবাইল সার্ভিস পয়েন্ট, রেন্ট-এ-কার বা অন্য কোনো সেবা যোগ করুন — সাথে সাথে পাবলিশ হয়ে যায়।",
+    "schoolTitle": "স্কুল যোগ করুন"
   },
   "sellExchange": {
     "heading": "এক্সচেঞ্জ বিজ্ঞাপন পোস্ট করুন",
@@ -207,6 +214,14 @@
   "sellMarketplace": {
     "heading": "লোকাল বাজার বিজ্ঞাপন পোস্ট করুন",
     "description": "স্থানীয় দোকান ও ব্যবসার পণ্য। ক্রেতারা যাতে আপনার দোকান খুঁজে পান, সেজন্য আপনার ব্যবসা যুক্ত করুন।"
+  },
+  "sellPlace": {
+    "heading": "জায়গা যোগ করুন",
+    "description": "অন্যদের জন্য একটা জায়গা সাজেস্ট করুন। প্রকাশের আগে একজন অ্যাডমিন প্রতিটি submission পর্যালোচনা করেন।"
+  },
+  "sellBusiness": {
+    "heading": "সেবা যোগ করুন",
+    "description": "ব্যাংক, এটিএম বুথ, মোবাইল সার্ভিস পয়েন্ট, রেন্ট-এ-কার বা অন্য কোনো ব্যবসা/সেবা ডিরেক্টরিতে যোগ করুন। এটি সাথে সাথে পাবলিক পেজে দেখা যাবে — অনুগ্রহ করে শুধু সঠিক তথ্য দিন।"
   },
   "listingForm": {
     "errorGeneric": "বিজ্ঞাপন তৈরি করা যায়নি",
@@ -243,12 +258,112 @@
     "saveChanges": "পরিবর্তন সংরক্ষণ করুন",
     "saveLabel": "{label} সংরক্ষণ করুন"
   },
+  "placeForm": {
+    "errorGeneric": "এই জায়গা জমা দেওয়া যায়নি",
+    "nameLabel": "নাম",
+    "categoryLabel": "ক্যাটাগরি",
+    "selectPlaceholder": "বেছে নিন…",
+    "locationLabel": "অবস্থান",
+    "descriptionLabel": "বিবরণ",
+    "imagesLabel": "ছবি",
+    "imagesHelp": "সর্বোচ্চ {count}টি ছবি আপলোড করুন।",
+    "mapPinLabel": "মানচিত্র পিন (ঐচ্ছিক)",
+    "latitudeLabel": "অক্ষাংশ",
+    "longitudeLabel": "দ্রাঘিমাংশ",
+    "submitting": "জমা দেওয়া হচ্ছে…",
+    "submitForReview": "পর্যালোচনার জন্য জমা দিন"
+  },
+  "businessForm": {
+    "errorGeneric": "এই সেবা যোগ করা যায়নি",
+    "nameLabel": "নাম",
+    "categoryLabel": "ক্যাটাগরি",
+    "selectPlaceholder": "বেছে নিন…",
+    "locationLabel": "অবস্থান",
+    "phoneLabel": "ফোন (ঐচ্ছিক)",
+    "addressLabel": "ঠিকানা (ঐচ্ছিক)",
+    "descriptionLabel": "বিবরণ",
+    "imagesLabel": "ছবি",
+    "imagesHelp": "সর্বোচ্চ {count}টি ছবি আপলোড করুন।",
+    "mapPinLabel": "মানচিত্র পিন (ঐচ্ছিক)",
+    "latitudeLabel": "অক্ষাংশ",
+    "longitudeLabel": "দ্রাঘিমাংশ",
+    "submitting": "যোগ করা হচ্ছে…",
+    "submitLabel": "সেবা যোগ করুন"
+  },
+  "sellHospital": {
+    "heading": "হাসপাতাল ম্যানেজ করুন",
+    "description": "আপনার হাসপাতালের তথ্য যোগ বা হালনাগাদ করুন। এই সুবিধা পেতে প্রথমে অ্যাডমিনের সাথে হোয়াটসঅ্যাপ বা কলে যোগাযোগ করে অনুমতি নিতে হবে।",
+    "permissionNotice": "হাসপাতাল যোগ করার অনুমতি এখনো আপনাকে দেওয়া হয়নি। অনুগ্রহ করে হোয়াটসঅ্যাপ বা কল করে অ্যাডমিনের সাথে যোগাযোগ করুন — অনুমতি দেওয়ার পর আপনি এখান থেকে আপনার হাসপাতাল যোগ করতে পারবেন।",
+    "errorGeneric": "হাসপাতালের তথ্য সংরক্ষণ করা যায়নি",
+    "nameLabel": "নাম",
+    "typeLabel": "ধরন",
+    "selectPlaceholder": "বেছে নিন…",
+    "locationLabel": "অবস্থান",
+    "hotlineLabel": "হটলাইন নম্বর (ঐচ্ছিক)",
+    "ambulanceLabel": "অ্যাম্বুলেন্স নম্বর (ঐচ্ছিক)",
+    "addressLabel": "ঠিকানা (ঐচ্ছিক)",
+    "servicesLabel": "সেবাসমূহ (ঐচ্ছিক)",
+    "servicesPlaceholder": "যেমন: জরুরি বিভাগ, আইসিইউ, প্যাথলজি",
+    "servicesHelp": "কমা (,) দিয়ে একাধিক সেবা আলাদা করুন।",
+    "imagesLabel": "ছবি",
+    "imagesHelp": "সর্বোচ্চ {count}টি ছবি আপলোড করুন।",
+    "mapPinLabel": "মানচিত্র পিন (ঐচ্ছিক)",
+    "latitudeLabel": "অক্ষাংশ",
+    "longitudeLabel": "দ্রাঘিমাংশ",
+    "submitting": "সংরক্ষণ করা হচ্ছে…",
+    "submitLabel": "হাসপাতাল যোগ করুন",
+    "updateLabel": "তথ্য হালনাগাদ করুন"
+  },
+  "hospitalType": {
+    "govt": "সরকারি",
+    "private": "বেসরকারি",
+    "clinic": "ক্লিনিক"
+  },
+  "sellSchool": {
+    "heading": "স্কুল ম্যানেজ করুন",
+    "description": "আপনার স্কুলের তথ্য যোগ বা হালনাগাদ করুন। এই সুবিধা পেতে প্রথমে অ্যাডমিনের সাথে হোয়াটসঅ্যাপ বা কলে যোগাযোগ করে অনুমতি নিতে হবে।",
+    "permissionNotice": "স্কুল যোগ করার অনুমতি এখনো আপনাকে দেওয়া হয়নি। অনুগ্রহ করে হোয়াটসঅ্যাপ বা কল করে অ্যাডমিনের সাথে যোগাযোগ করুন — অনুমতি দেওয়ার পর আপনি এখান থেকে আপনার স্কুল যোগ করতে পারবেন।",
+    "errorGeneric": "স্কুলের তথ্য সংরক্ষণ করা যায়নি",
+    "nameLabel": "নাম",
+    "typeLabel": "ধরন",
+    "selectPlaceholder": "বেছে নিন…",
+    "locationLabel": "অবস্থান",
+    "contactLabel": "যোগাযোগ নম্বর (ঐচ্ছিক)",
+    "addressLabel": "ঠিকানা (ঐচ্ছিক)",
+    "mapPinLabel": "মানচিত্র পিন (ঐচ্ছিক)",
+    "latitudeLabel": "অক্ষাংশ",
+    "longitudeLabel": "দ্রাঘিমাংশ",
+    "submitting": "সংরক্ষণ করা হচ্ছে…",
+    "submitLabel": "স্কুল যোগ করুন",
+    "updateLabel": "তথ্য হালনাগাদ করুন"
+  },
+  "schoolType": {
+    "govt": "সরকারি",
+    "private": "বেসরকারি",
+    "madrasa": "মাদ্রাসা",
+    "college": "কলেজ",
+    "other": "অন্যান্য"
+  },
+  "myPlaces": {
+    "heading": "আমার জায়গাসমূহ",
+    "empty": "আপনি এখনো কোনো জায়গা জমা দেননি।",
+    "addFirst": "আপনার প্রথম জায়গা যোগ করুন",
+    "moderationPending": "পর্যালোচনাধীন",
+    "moderationApproved": "অনুমোদিত",
+    "moderationRejected": "প্রত্যাখ্যাত"
+  },
   "shopForm": {
     "errorGeneric": "কিছু একটা ভুল হয়েছে, আবার চেষ্টা করুন।",
     "nameLabel": "দোকানের নাম",
-    "marketLabel": "বাজার",
+    "marketLabel": "বাজার (ঐচ্ছিক)",
+    "noMarketOption": "কোনো নির্দিষ্ট বাজার নেই (স্বতন্ত্র দোকান)",
+    "locationLabel": "অবস্থান",
     "selectPlaceholder": "নির্বাচন করুন",
     "categoryLabel": "দোকানের ধরন",
+    "addCategory": "+ নতুন ধরন যোগ করুন",
+    "newCategoryNameLabel": "নতুন ধরনের নাম",
+    "addCategoryConfirm": "যোগ করুন",
+    "addCategoryCancel": "বাতিল",
     "contactPhoneLabel": "যোগাযোগের নম্বর",
     "descriptionLabel": "বিস্তারিত",
     "imagesLabel": "ছবি",
@@ -256,7 +371,26 @@
     "submitForReview": "রিভিউয়ের জন্য জমা দিন"
   },
   "hospitalDetail": {
+    "hotline": "হটলাইন: {contact}",
     "doctors": "ডাক্তার",
+    "doctorDays": "দিন: {days}",
+    "doctorHours": "সময়: {hours}",
+    "doctorContact": "যোগাযোগ: {contact}"
+  },
+  "hospitalDoctors": {
+    "heading": "ডাক্তারগণ",
+    "empty": "এখনো কোনো ডাক্তার যোগ করা হয়নি।",
+    "errorGeneric": "ডাক্তার যোগ করা যায়নি",
+    "nameLabel": "নাম",
+    "specialtyLabel": "বিশেষজ্ঞতা (ঐচ্ছিক)",
+    "daysLabel": "দিন (ঐচ্ছিক)",
+    "daysPlaceholder": "যেমন: শনি, সোম, বুধ",
+    "daysHelp": "কমা (,) দিয়ে একাধিক দিন আলাদা করুন।",
+    "hoursLabel": "সময় (ঐচ্ছিক)",
+    "hoursPlaceholder": "যেমন: সকাল ১০টা - দুপুর ২টা",
+    "contactLabel": "যোগাযোগ (ঐচ্ছিক)",
+    "addLabel": "ডাক্তার যোগ করুন",
+    "adding": "যোগ করা হচ্ছে…",
     "doctorDays": "দিন: {days}",
     "doctorHours": "সময়: {hours}",
     "doctorContact": "যোগাযোগ: {contact}"
@@ -293,10 +427,45 @@
     "emptyState": "এখনো কোনো প্রশ্নোত্তর যোগ করা হয়নি।"
   },
   "businessPage": {
-    "metaTitle": "স্থানীয় ব্যবসা ডিরেক্টরি",
-    "metaDescription": "{siteName}-এর স্থানীয় ব্যবসা ডিরেক্টরি।",
-    "title": "স্থানীয় ব্যবসা ডিরেক্টরি",
-    "description": "স্থানীয় ব্যবসা দ্বারা পরিচালিত দোকান ও সেবা।"
+    "metaTitle": "জনপ্রিয় সেবা",
+    "metaDescription": "{siteName}-এর ব্যাংক, মোবাইল ব্যাংকিং, এটিএম ও পরিবহন সেবার ডিরেক্টরি।",
+    "title": "জনপ্রিয় সেবা",
+    "description": "ব্যাংক, এটিএম, মোবাইল ব্যাংকিং পয়েন্ট, রেন্ট-এ-কার ও বাস সার্ভিস।",
+    "category": {
+      "bank": "{siteName}-এর সকল ব্যাংক",
+      "bkash_point": "বিকাশ সার্ভিস পয়েন্ট",
+      "robi_point": "রবি সার্কেল সার্ভিস পয়েন্ট",
+      "atm_booth": "এটিএম বুথ",
+      "car_rental": "রেন্ট এ কার সার্ভিস",
+      "ekota_bus_service": "একতা বাস সার্ভিস",
+      "dhaka_homna_bus_service": "ঢাকা-হোমনা বাস সার্ভিস"
+    }
+  },
+  "shopsPage": {
+    "metaTitle": "দোকান",
+    "metaDescription": "{siteName}-এর দোকান ডিরেক্টরি — বাজারের ভেতরে বা স্বতন্ত্র, ক্যাটাগরি অনুযায়ী খুঁজুন।",
+    "title": "দোকান",
+    "description": "উপজেলার সব দোকান — নির্দিষ্ট বাজারের ভেতরে বা স্বতন্ত্রভাবে, ক্যাটাগরি অনুযায়ী খুঁজুন।",
+    "allCategories": "সবগুলো",
+    "emptyState": "এই ক্যাটাগরিতে এখনো কোনো দোকান তালিকাভুক্ত হয়নি।",
+    "addShop": "দোকান যোগ করুন",
+    "independentBadge": "স্বতন্ত্র দোকান"
+  },
+  "govtInfoPage": {
+    "metaTitle": "সরকারি যোগাযোগ",
+    "metaDescription": "{siteName}-এর UNO অফিস, উপজেলা পরিষদ ও ইউনিয়ন পরিষদ কার্যালয়ের যোগাযোগ তথ্য।",
+    "title": "সরকারি যোগাযোগ",
+    "description": "UNO অফিস, উপজেলা পরিষদ, ইউনিয়ন পরিষদ ও থানার ঠিকানা ও ফোন নম্বর।",
+    "emptyState": "এখনো কোনো অফিসের তথ্য যোগ করা হয়নি।",
+    "phoneLabel": "ফোন: {phone}",
+    "emailLabel": "ইমেইল: {email}",
+    "category": {
+      "uno_office": "UNO অফিস",
+      "upazila_parishad": "উপজেলা পরিষদ",
+      "union_parishad": "ইউনিয়ন পরিষদ",
+      "police_station": "থানা",
+      "other": "অন্যান্য"
+    }
   },
   "exchangePage": {
     "metaTitle": "এক্সচেঞ্জ — স্থানীয়ভাবে কেনাবেচা করুন",
@@ -314,7 +483,9 @@
     "description": "উপজেলার দোকান ও ব্যবসার পণ্য — দেখুন, তারপর বিক্রেতাকে বার্তা পাঠান বা কল করুন।",
     "productsCount": "{count, plural, other {#টি পণ্য}}",
     "listProduct": "পণ্য তালিকাভুক্ত করুন",
-    "emptyMessage": "এখনো কোনো পণ্য তালিকাভুক্ত হয়নি। স্থানীয় ব্যবসাগুলো তাদেরটি যোগ করতে পারে।"
+    "emptyMessage": "এখনো কোনো পণ্য তালিকাভুক্ত হয়নি। স্থানীয় ব্যবসাগুলো তাদেরটি যোগ করতে পারে।",
+    "buySellTab": "কেনা-বেচা",
+    "exchangeTab": "বিনিময়"
   },
   "marketsList": {
     "metaTitle": "সাপ্তাহিক বাজার",
@@ -328,11 +499,35 @@
     "title": "হাসপাতাল ও ডাক্তার",
     "description": "যোগাযোগের তথ্যসহ সরকারি, বেসরকারি ও ক্লিনিকের তালিকা।"
   },
+  "ambulancePage": {
+    "metaTitle": "অ্যাম্বুলেন্স নম্বর",
+    "metaDescription": "{siteName}-এর হাসপাতালগুলোর অ্যাম্বুলেন্স হটলাইন নম্বর।",
+    "title": "অ্যাম্বুলেন্স নম্বর",
+    "description": "উপজেলার হাসপাতালগুলোর অ্যাম্বুলেন্স হটলাইন নম্বর।",
+    "empty": "এই মুহূর্তে কোনো অ্যাম্বুলেন্স নম্বর যোগ করা হয়নি।",
+    "call": "কল করুন"
+  },
+  "schoolsList": {
+    "metaTitle": "স্কুল ও শিক্ষা প্রতিষ্ঠান",
+    "metaDescription": "{siteName}-এর সরকারি, বেসরকারি, মাদ্রাসা ও কলেজের তালিকা।",
+    "title": "স্কুল ও শিক্ষা প্রতিষ্ঠান",
+    "description": "যোগাযোগের তথ্যসহ সরকারি, বেসরকারি, মাদ্রাসা ও কলেজের তালিকা।"
+  },
   "placesList": {
     "metaTitle": "স্থান",
     "metaDescription": "{siteName}-এর পর্যটন স্থান, পার্ক ও উল্লেখযোগ্য জায়গা।",
     "title": "স্থান",
-    "description": "ঘুরে দেখার মতো পর্যটন স্থান, পার্ক ও উল্লেখযোগ্য জায়গা।"
+    "description": "ঘুরে দেখার মতো পর্যটন স্থান, পার্ক ও উল্লেখযোগ্য জায়গা।",
+    "category": {
+      "tourist": "ঘুরার জায়গা",
+      "restaurant": "রেস্টুরেন্ট",
+      "park": "পার্ক",
+      "historical": "ঐতিহাসিক",
+      "religious": "ধর্মীয়",
+      "natural": "প্রাকৃতিক",
+      "shop": "দর্শনীয় দোকান",
+      "other": "অন্যান্য"
+    }
   },
   "sellShop": {
     "metaTitle": "দোকান যুক্ত করুন",
@@ -422,7 +617,9 @@
     "anyCondition": "যেকোনো অবস্থা",
     "conditionNew": "নতুন",
     "conditionUsed": "ব্যবহৃত",
-    "allCategories": "সব"
+    "allCategories": "সব",
+    "locationAriaLabel": "লোকেশন",
+    "anyLocation": "সব লোকেশন"
   },
   "listingImage": {
     "noPhoto": "কোনো ছবি নেই"
@@ -456,6 +653,10 @@
     "primaryRole": "প্রধান রোল",
     "scopedRoles": "নির্দিষ্ট-এলাকা রোল",
     "status": "অবস্থা",
+    "hospitalPermission": "হাসপাতাল ম্যানেজার",
+    "schoolPermission": "স্কুল ম্যানেজার",
+    "granted": "অনুমোদিত",
+    "notGranted": "অনুমোদিত নয়",
     "noUsers": "এখনো কোনো ব্যবহারকারী নেই।",
     "you": "আপনি",
     "verified": "যাচাইকৃত"
@@ -509,6 +710,8 @@
     "generalDescription": "সাইটের নাম, ঠিকানা (URL) ও ডিফল্ট বর্ণনা — পেজ টাইটেল, সার্চ ইঞ্জিন ও শেয়ার-লিংক প্রিভিউতে ব্যবহৃত হয়।",
     "smsTitle": "এসএমএস গেটওয়ে (ফোন ওটিপি)",
     "smsDescription": "ডেমো মোডে (কনসোল) এসএমএস পাঠানোর বদলে স্ক্রিনে ওটিপি কোড দেখানো হয়। প্রোভাইডার অ্যাকাউন্ট পেলে http-তে পরিবর্তন করুন।",
+    "authTitle": "মোবাইল ওটিপি লগইন",
+    "authDescription": "পুরো সাইটে ফোন-ওটিপি দিয়ে লগইন বন্ধ বা চালু করুন। বন্ধ করলে লগইন পেজ থেকে ওটিপি ট্যাব হাইড হয়ে যাবে এবং নতুন ওটিপি লগইন ব্লক হবে - পাসওয়ার্ড, গুগল ও ফেসবুক লগইন এবং ওটিপি রেজিস্ট্রেশন/ফোন ভেরিফিকেশনে কোনো প্রভাব পড়বে না।",
     "captchaTitle": "ক্লাউডফ্লেয়ার টার্নস্টাইল",
     "captchaDescription": "ওটিপি অনুরোধের ধাপে বট সুরক্ষা। ঐচ্ছিক।",
     "facebookTitle": "ফেসবুক লগইন",

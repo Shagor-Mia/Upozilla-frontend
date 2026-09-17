@@ -1,12 +1,14 @@
 {
   "nav": {
     "places": "Places",
-    "services": "Services",
+    "services": "Popular Services",
     "bazaar": "Bazaar",
     "marketplace": "Marketplace",
     "exchange": "Exchange",
     "hospitals": "Hospitals",
-    "business": "Business",
+    "ambulance": "Ambulance",
+    "shops": "Shops",
+    "schools": "Schools",
     "news": "News",
     "unions": "Unions",
     "faq": "FAQ",
@@ -198,7 +200,12 @@
     "marketplaceTitle": "Marketplace product",
     "marketplaceDescription": "List a product from your shop or business for local customers to find.",
     "shopTitle": "Shop",
-    "shopDescription": "Add your shop to the market directory."
+    "shopDescription": "Add your shop — inside a specific market, or standalone anywhere.",
+    "placeTitle": "Add a place",
+    "placeDescription": "Suggest a tourist spot, restaurant, park, or other place for this area.",
+    "businessTitle": "Add a service",
+    "businessDescription": "List a bank, ATM, mobile-service point, rental, or other service business. Goes live immediately.",
+    "schoolTitle": "Add a school"
   },
   "sellExchange": {
     "heading": "Post an exchange listing",
@@ -207,6 +214,14 @@
   "sellMarketplace": {
     "heading": "List a marketplace product",
     "description": "Products from local shops and businesses. Attach your business so customers can find your storefront."
+  },
+  "sellPlace": {
+    "heading": "Add a place",
+    "description": "Suggest a place for others to discover. An admin reviews every submission before it goes live."
+  },
+  "sellBusiness": {
+    "heading": "Add a service",
+    "description": "Add a bank, ATM booth, mobile-service point, rental, or other business/service to the directory. It appears publicly right away — please only add real, accurate listings."
   },
   "listingForm": {
     "errorGeneric": "Could not create the listing",
@@ -243,12 +258,112 @@
     "saveChanges": "Save changes",
     "saveLabel": "Save {label}"
   },
+  "placeForm": {
+    "errorGeneric": "Could not submit this place",
+    "nameLabel": "Name",
+    "categoryLabel": "Category",
+    "selectPlaceholder": "Select…",
+    "locationLabel": "Location",
+    "descriptionLabel": "Description",
+    "imagesLabel": "Photos",
+    "imagesHelp": "Upload up to {count} photos.",
+    "mapPinLabel": "Map pin (optional)",
+    "latitudeLabel": "Latitude",
+    "longitudeLabel": "Longitude",
+    "submitting": "Submitting…",
+    "submitForReview": "Submit for review"
+  },
+  "businessForm": {
+    "errorGeneric": "Could not add this service",
+    "nameLabel": "Name",
+    "categoryLabel": "Category",
+    "selectPlaceholder": "Select…",
+    "locationLabel": "Location",
+    "phoneLabel": "Phone (optional)",
+    "addressLabel": "Address (optional)",
+    "descriptionLabel": "Description",
+    "imagesLabel": "Photos",
+    "imagesHelp": "Upload up to {count} photos.",
+    "mapPinLabel": "Map pin (optional)",
+    "latitudeLabel": "Latitude",
+    "longitudeLabel": "Longitude",
+    "submitting": "Adding…",
+    "submitLabel": "Add service"
+  },
+  "sellHospital": {
+    "heading": "Manage your hospital",
+    "description": "Add or update your hospital's information. This requires admin permission first - contact the admin over WhatsApp or a call to request it.",
+    "permissionNotice": "You haven't been granted permission to add a hospital yet. Please contact the admin over WhatsApp or a call - once granted, you'll be able to add your hospital here.",
+    "errorGeneric": "Could not save the hospital",
+    "nameLabel": "Name",
+    "typeLabel": "Type",
+    "selectPlaceholder": "Select…",
+    "locationLabel": "Location",
+    "hotlineLabel": "Hotline number (optional)",
+    "ambulanceLabel": "Ambulance number (optional)",
+    "addressLabel": "Address (optional)",
+    "servicesLabel": "Services (optional)",
+    "servicesPlaceholder": "e.g. Emergency, ICU, Pathology",
+    "servicesHelp": "Separate multiple services with a comma.",
+    "imagesLabel": "Photos",
+    "imagesHelp": "Upload up to {count} photos.",
+    "mapPinLabel": "Map pin (optional)",
+    "latitudeLabel": "Latitude",
+    "longitudeLabel": "Longitude",
+    "submitting": "Saving…",
+    "submitLabel": "Add hospital",
+    "updateLabel": "Update details"
+  },
+  "hospitalType": {
+    "govt": "Government",
+    "private": "Private",
+    "clinic": "Clinic"
+  },
+  "sellSchool": {
+    "heading": "Manage your school",
+    "description": "Add or update your school's information. This requires admin permission first - contact the admin over WhatsApp or a call to request it.",
+    "permissionNotice": "You haven't been granted permission to add a school yet. Please contact the admin over WhatsApp or a call - once granted, you'll be able to add your school here.",
+    "errorGeneric": "Could not save the school",
+    "nameLabel": "Name",
+    "typeLabel": "Type",
+    "selectPlaceholder": "Select…",
+    "locationLabel": "Location",
+    "contactLabel": "Contact number (optional)",
+    "addressLabel": "Address (optional)",
+    "mapPinLabel": "Map pin (optional)",
+    "latitudeLabel": "Latitude",
+    "longitudeLabel": "Longitude",
+    "submitting": "Saving…",
+    "submitLabel": "Add school",
+    "updateLabel": "Update details"
+  },
+  "schoolType": {
+    "govt": "Government",
+    "private": "Private",
+    "madrasa": "Madrasa",
+    "college": "College",
+    "other": "Other"
+  },
+  "myPlaces": {
+    "heading": "My places",
+    "empty": "You haven't submitted any places yet.",
+    "addFirst": "Add your first place",
+    "moderationPending": "Moderation: pending",
+    "moderationApproved": "Moderation: approved",
+    "moderationRejected": "Moderation: rejected"
+  },
   "shopForm": {
     "errorGeneric": "Something went wrong, please try again.",
     "nameLabel": "Shop name",
-    "marketLabel": "Market",
+    "marketLabel": "Market (optional)",
+    "noMarketOption": "No specific market (standalone shop)",
+    "locationLabel": "Location",
     "selectPlaceholder": "Select…",
     "categoryLabel": "Shop category",
+    "addCategory": "+ Add new category",
+    "newCategoryNameLabel": "New category name",
+    "addCategoryConfirm": "Add",
+    "addCategoryCancel": "Cancel",
     "contactPhoneLabel": "Contact number",
     "descriptionLabel": "Description",
     "imagesLabel": "Photos",
@@ -256,7 +371,26 @@
     "submitForReview": "Submit for review"
   },
   "hospitalDetail": {
+    "hotline": "Hotline: {contact}",
     "doctors": "Doctors",
+    "doctorDays": "Days: {days}",
+    "doctorHours": "Hours: {hours}",
+    "doctorContact": "Contact: {contact}"
+  },
+  "hospitalDoctors": {
+    "heading": "Doctors",
+    "empty": "No doctors added yet.",
+    "errorGeneric": "Could not add the doctor",
+    "nameLabel": "Name",
+    "specialtyLabel": "Specialty (optional)",
+    "daysLabel": "Days (optional)",
+    "daysPlaceholder": "e.g. Sat, Mon, Wed",
+    "daysHelp": "Separate multiple days with a comma.",
+    "hoursLabel": "Hours (optional)",
+    "hoursPlaceholder": "e.g. 10am - 2pm",
+    "contactLabel": "Contact (optional)",
+    "addLabel": "Add doctor",
+    "adding": "Adding…",
     "doctorDays": "Days: {days}",
     "doctorHours": "Hours: {hours}",
     "doctorContact": "Contact: {contact}"
@@ -293,10 +427,45 @@
     "emptyState": "No questions have been added yet."
   },
   "businessPage": {
-    "metaTitle": "Local Business Directory",
-    "metaDescription": "Local business directory for {siteName}.",
-    "title": "Local Business Directory",
-    "description": "Shops and services run by local businesses."
+    "metaTitle": "Popular Services",
+    "metaDescription": "Bank, mobile banking, ATM, and transport service directory for {siteName}.",
+    "title": "Popular Services",
+    "description": "Banks, ATMs, mobile banking points, rent-a-car, and bus services.",
+    "category": {
+      "bank": "All Banks in {siteName}",
+      "bkash_point": "bKash Service Point",
+      "robi_point": "Robi Circle Service Point",
+      "atm_booth": "ATM Booth",
+      "car_rental": "Rent A Car Service",
+      "ekota_bus_service": "Ekota Bus Service",
+      "dhaka_homna_bus_service": "Dhaka-Homna Bus Service"
+    }
+  },
+  "shopsPage": {
+    "metaTitle": "Shops",
+    "metaDescription": "Shop directory for {siteName} - inside a market or standalone, browse by category.",
+    "title": "Shops",
+    "description": "All shops across the upazila - inside a specific market or standalone, browse by category.",
+    "allCategories": "All",
+    "emptyState": "No shops listed in this category yet.",
+    "addShop": "Add a shop",
+    "independentBadge": "Standalone shop"
+  },
+  "govtInfoPage": {
+    "metaTitle": "Government Contacts",
+    "metaDescription": "Contact information for the UNO office, Upazila Parishad, and Union Parishad offices in {siteName}.",
+    "title": "Government Contacts",
+    "description": "Addresses and phone numbers for the UNO office, Upazila Parishad, Union Parishad, and police station.",
+    "emptyState": "No office information has been added yet.",
+    "phoneLabel": "Phone: {phone}",
+    "emailLabel": "Email: {email}",
+    "category": {
+      "uno_office": "UNO Office",
+      "upazila_parishad": "Upazila Parishad",
+      "union_parishad": "Union Parishad",
+      "police_station": "Police Station",
+      "other": "Other"
+    }
   },
   "exchangePage": {
     "metaTitle": "Exchange — Buy & Sell Locally",
@@ -314,7 +483,9 @@
     "description": "Products from shops and businesses in the upazila — browse, then message or call the seller.",
     "productsCount": "{count, plural, one {# product} other {# products}}",
     "listProduct": "List a product",
-    "emptyMessage": "No products listed yet. Local businesses can add theirs."
+    "emptyMessage": "No products listed yet. Local businesses can add theirs.",
+    "buySellTab": "Buy & Sell",
+    "exchangeTab": "Exchange"
   },
   "marketsList": {
     "metaTitle": "Weekly Bazaar",
@@ -322,17 +493,41 @@
     "title": "Weekly Bazaar",
     "description": "Market days, hours, and type for haats and bazaars across the upazila."
   },
+  "ambulancePage": {
+    "metaTitle": "Ambulance Numbers",
+    "metaDescription": "Ambulance hotline numbers for {siteName}'s hospitals.",
+    "title": "Ambulance Numbers",
+    "description": "Ambulance hotline numbers for hospitals across the upazila.",
+    "empty": "No ambulance numbers have been added yet.",
+    "call": "Call"
+  },
   "hospitalsList": {
     "metaTitle": "Hospitals & Doctors",
     "metaDescription": "Hospital and doctor directory for {siteName}.",
     "title": "Hospitals & Doctors",
     "description": "Government, private, and clinic listings with contact details."
   },
+  "schoolsList": {
+    "metaTitle": "Schools & Educational Institutions",
+    "metaDescription": "Directory of government, private, madrasa, and college listings for {siteName}.",
+    "title": "Schools & Educational Institutions",
+    "description": "Government, private, madrasa, and college listings with contact details."
+  },
   "placesList": {
     "metaTitle": "Places",
     "metaDescription": "Tourist spots, parks, and notable places in {siteName}.",
     "title": "Places",
-    "description": "Tourist spots, parks, and notable places to visit."
+    "description": "Tourist spots, parks, and notable places to visit.",
+    "category": {
+      "tourist": "Tourist spot",
+      "restaurant": "Restaurant",
+      "park": "Park",
+      "historical": "Historical",
+      "religious": "Religious",
+      "natural": "Natural",
+      "shop": "Notable shop",
+      "other": "Other"
+    }
   },
   "sellShop": {
     "metaTitle": "Add a shop",
@@ -422,7 +617,9 @@
     "anyCondition": "Any condition",
     "conditionNew": "New",
     "conditionUsed": "Used",
-    "allCategories": "All"
+    "allCategories": "All",
+    "locationAriaLabel": "Location",
+    "anyLocation": "All locations"
   },
   "listingImage": {
     "noPhoto": "No photo"
@@ -456,6 +653,10 @@
     "primaryRole": "Primary role",
     "scopedRoles": "Scoped roles",
     "status": "Status",
+    "hospitalPermission": "Hospital manager",
+    "schoolPermission": "School manager",
+    "granted": "Granted",
+    "notGranted": "Not granted",
     "noUsers": "No users yet.",
     "you": "you",
     "verified": "Verified"
@@ -509,6 +710,8 @@
     "generalDescription": "Site name, URL, and default description — used in page titles, search engines, and shared-link previews.",
     "smsTitle": "SMS gateway (phone OTP)",
     "smsDescription": "Demo mode (console) shows the OTP code on screen instead of sending an SMS. Switch to http once you have a provider account.",
+    "authTitle": "Mobile OTP login",
+    "authDescription": "Lets you turn phone-OTP sign-in off site-wide. Disabling it hides the OTP tab on the login page and blocks new OTP logins - password, Google and Facebook login and OTP registration/phone verification are unaffected.",
     "captchaTitle": "Cloudflare Turnstile",
     "captchaDescription": "Bot protection on the OTP request step. Optional.",
     "facebookTitle": "Facebook Login",

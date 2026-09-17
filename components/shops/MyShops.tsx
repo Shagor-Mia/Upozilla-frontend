@@ -65,7 +65,7 @@ export function MyShops() {
               {shop.name}
             </Link>
             <p className="text-metadata mt-1 text-on-surface-variant">
-              {shop.market_name} · যোগ হয়েছে {formatRelativeTime(shop.created_at)}
+              {shop.market_name ?? "স্বতন্ত্র দোকান"} · যোগ হয়েছে {formatRelativeTime(shop.created_at)}
             </p>
           </div>
         </div>

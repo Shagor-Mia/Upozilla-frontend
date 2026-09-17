@@ -10,6 +10,7 @@ export const ENV_PUBLIC_SETTINGS: PublicSettings = {
   site_url: config.siteUrl,
   site_description: null,
   sms_demo_mode: true,
+  otp_login_enabled: true,
   turnstile_site_key: null,
   facebook_app_id: config.facebookAppId || null,
   google_client_id: config.googleClientId || null,

@@ -1,12 +1,14 @@
 {
   "nav": {
     "places": "الأماكن",
-    "services": "الخدمات",
+    "services": "الخدمات الشائعة",
     "bazaar": "السوق",
     "marketplace": "المتجر",
     "exchange": "التبادل",
     "hospitals": "المستشفيات",
-    "business": "الأعمال",
+    "ambulance": "سيارة إسعاف",
+    "shops": "المحلات",
+    "schools": "المدارس",
     "news": "الأخبار",
     "unions": "الاتحادات",
     "faq": "الأسئلة الشائعة",
@@ -198,7 +200,12 @@
     "marketplaceTitle": "منتج في السوق",
     "marketplaceDescription": "أدرج منتجًا من متجرك أو عملك ليجده العملاء المحليون.",
     "shopTitle": "متجر",
-    "shopDescription": "أضف متجرك إلى دليل السوق."
+    "shopDescription": "أضف متجرك — داخل سوق محدد أو بشكل مستقل في أي مكان.",
+    "placeTitle": "إضافة مكان",
+    "placeDescription": "اقترح مكانًا سياحيًا أو مطعمًا أو حديقة أو أي مكان آخر في هذه المنطقة.",
+    "businessTitle": "إضافة خدمة",
+    "businessDescription": "أضف بنكًا أو صرافًا آليًا أو نقطة خدمة موبايل أو تأجير سيارات أو أي عمل/خدمة أخرى — يُنشر فورًا.",
+    "schoolTitle": "إضافة مدرسة"
   },
   "sellExchange": {
     "heading": "نشر إعلان تبادل",
@@ -207,6 +214,14 @@
   "sellMarketplace": {
     "heading": "نشر إعلان في السوق المحلي",
     "description": "منتجات من المتاجر والأعمال المحلية. أضف عملك ليتمكن العملاء من العثور على متجرك."
+  },
+  "sellPlace": {
+    "heading": "إضافة مكان",
+    "description": "اقترح مكانًا ليكتشفه الآخرون. يراجع المشرف كل طلب قبل نشره."
+  },
+  "sellBusiness": {
+    "heading": "إضافة خدمة",
+    "description": "أضف بنكًا أو كشك صراف آلي أو نقطة خدمة موبايل أو تأجير سيارات أو أي عمل/خدمة أخرى إلى الدليل. يظهر فورًا للعامة — يرجى إضافة معلومات دقيقة فقط."
   },
   "listingForm": {
     "errorGeneric": "تعذر إنشاء الإعلان",
@@ -243,12 +258,112 @@
     "saveChanges": "حفظ التغييرات",
     "saveLabel": "حفظ {label}"
   },
+  "placeForm": {
+    "errorGeneric": "تعذر إرسال هذا المكان",
+    "nameLabel": "الاسم",
+    "categoryLabel": "الفئة",
+    "selectPlaceholder": "اختر…",
+    "locationLabel": "الموقع",
+    "descriptionLabel": "الوصف",
+    "imagesLabel": "الصور",
+    "imagesHelp": "ارفع حتى {count} صور.",
+    "mapPinLabel": "دبوس الخريطة (اختياري)",
+    "latitudeLabel": "خط العرض",
+    "longitudeLabel": "خط الطول",
+    "submitting": "جارٍ الإرسال…",
+    "submitForReview": "إرسال للمراجعة"
+  },
+  "businessForm": {
+    "errorGeneric": "تعذر إضافة هذه الخدمة",
+    "nameLabel": "الاسم",
+    "categoryLabel": "الفئة",
+    "selectPlaceholder": "اختر…",
+    "locationLabel": "الموقع",
+    "phoneLabel": "الهاتف (اختياري)",
+    "addressLabel": "العنوان (اختياري)",
+    "descriptionLabel": "الوصف",
+    "imagesLabel": "الصور",
+    "imagesHelp": "ارفع حتى {count} صور.",
+    "mapPinLabel": "دبوس الخريطة (اختياري)",
+    "latitudeLabel": "خط العرض",
+    "longitudeLabel": "خط الطول",
+    "submitting": "جارٍ الإضافة…",
+    "submitLabel": "إضافة الخدمة"
+  },
+  "sellHospital": {
+    "heading": "إدارة مستشفاك",
+    "description": "أضف أو حدّث معلومات مستشفاك. يتطلب هذا إذن المسؤول أولاً - تواصل مع المسؤول عبر واتساب أو مكالمة لطلبه.",
+    "permissionNotice": "لم يُمنح لك إذن إضافة مستشفى بعد. يرجى التواصل مع المسؤول عبر واتساب أو مكالمة - بعد الموافقة، ستتمكن من إضافة مستشفاك من هنا.",
+    "errorGeneric": "تعذر حفظ بيانات المستشفى",
+    "nameLabel": "الاسم",
+    "typeLabel": "النوع",
+    "selectPlaceholder": "اختر…",
+    "locationLabel": "الموقع",
+    "hotlineLabel": "رقم الخط الساخن (اختياري)",
+    "ambulanceLabel": "رقم الإسعاف (اختياري)",
+    "addressLabel": "العنوان (اختياري)",
+    "servicesLabel": "الخدمات (اختياري)",
+    "servicesPlaceholder": "مثال: الطوارئ، العناية المركزة، المختبر",
+    "servicesHelp": "افصل بين الخدمات المتعددة بفاصلة.",
+    "imagesLabel": "الصور",
+    "imagesHelp": "ارفع حتى {count} صور.",
+    "mapPinLabel": "دبوس الخريطة (اختياري)",
+    "latitudeLabel": "خط العرض",
+    "longitudeLabel": "خط الطول",
+    "submitting": "جارٍ الحفظ…",
+    "submitLabel": "إضافة مستشفى",
+    "updateLabel": "تحديث البيانات"
+  },
+  "hospitalType": {
+    "govt": "حكومي",
+    "private": "خاص",
+    "clinic": "عيادة"
+  },
+  "sellSchool": {
+    "heading": "إدارة مدرستك",
+    "description": "أضف أو حدّث معلومات مدرستك. يتطلب هذا إذن المسؤول أولاً - تواصل مع المسؤول عبر واتساب أو مكالمة لطلبه.",
+    "permissionNotice": "لم يُمنح لك إذن إضافة مدرسة بعد. يرجى التواصل مع المسؤول عبر واتساب أو مكالمة - بعد الموافقة، ستتمكن من إضافة مدرستك من هنا.",
+    "errorGeneric": "تعذر حفظ بيانات المدرسة",
+    "nameLabel": "الاسم",
+    "typeLabel": "النوع",
+    "selectPlaceholder": "اختر…",
+    "locationLabel": "الموقع",
+    "contactLabel": "رقم التواصل (اختياري)",
+    "addressLabel": "العنوان (اختياري)",
+    "mapPinLabel": "دبوس الخريطة (اختياري)",
+    "latitudeLabel": "خط العرض",
+    "longitudeLabel": "خط الطول",
+    "submitting": "جارٍ الحفظ…",
+    "submitLabel": "إضافة مدرسة",
+    "updateLabel": "تحديث البيانات"
+  },
+  "schoolType": {
+    "govt": "حكومي",
+    "private": "خاص",
+    "madrasa": "مدرسة دينية",
+    "college": "كلية",
+    "other": "أخرى"
+  },
+  "myPlaces": {
+    "heading": "أماكني",
+    "empty": "لم ترسل أي مكان بعد.",
+    "addFirst": "أضف مكانك الأول",
+    "moderationPending": "قيد المراجعة",
+    "moderationApproved": "معتمد",
+    "moderationRejected": "مرفوض"
+  },
   "shopForm": {
     "errorGeneric": "حدث خطأ ما، يرجى المحاولة مرة أخرى.",
     "nameLabel": "اسم المتجر",
-    "marketLabel": "السوق",
+    "marketLabel": "السوق (اختياري)",
+    "noMarketOption": "لا يوجد سوق محدد (متجر مستقل)",
+    "locationLabel": "الموقع",
     "selectPlaceholder": "اختر…",
     "categoryLabel": "نوع المتجر",
+    "addCategory": "+ إضافة نوع جديد",
+    "newCategoryNameLabel": "اسم النوع الجديد",
+    "addCategoryConfirm": "إضافة",
+    "addCategoryCancel": "إلغاء",
     "contactPhoneLabel": "رقم التواصل",
     "descriptionLabel": "الوصف",
     "imagesLabel": "الصور",
@@ -256,7 +371,26 @@
     "submitForReview": "إرسال للمراجعة"
   },
   "hospitalDetail": {
+    "hotline": "الخط الساخن: {contact}",
     "doctors": "الأطباء",
+    "doctorDays": "الأيام: {days}",
+    "doctorHours": "الأوقات: {hours}",
+    "doctorContact": "التواصل: {contact}"
+  },
+  "hospitalDoctors": {
+    "heading": "الأطباء",
+    "empty": "لم تتم إضافة أي طبيب بعد.",
+    "errorGeneric": "تعذر إضافة الطبيب",
+    "nameLabel": "الاسم",
+    "specialtyLabel": "التخصص (اختياري)",
+    "daysLabel": "الأيام (اختياري)",
+    "daysPlaceholder": "مثال: السبت، الاثنين، الأربعاء",
+    "daysHelp": "افصل بين الأيام المتعددة بفاصلة.",
+    "hoursLabel": "الأوقات (اختياري)",
+    "hoursPlaceholder": "مثال: 10 صباحًا - 2 مساءً",
+    "contactLabel": "التواصل (اختياري)",
+    "addLabel": "إضافة طبيب",
+    "adding": "جارٍ الإضافة…",
     "doctorDays": "الأيام: {days}",
     "doctorHours": "الأوقات: {hours}",
     "doctorContact": "التواصل: {contact}"
@@ -293,10 +427,45 @@
     "emptyState": "لم تتم إضافة أي أسئلة بعد."
   },
   "businessPage": {
-    "metaTitle": "دليل الأعمال المحلية",
-    "metaDescription": "دليل الأعمال المحلية لـ {siteName}.",
-    "title": "دليل الأعمال المحلية",
-    "description": "متاجر وخدمات تديرها أعمال محلية."
+    "metaTitle": "الخدمات الشائعة",
+    "metaDescription": "دليل خدمات البنوك والخدمات المصرفية عبر الهاتف المحمول وأجهزة الصراف الآلي والنقل لـ {siteName}.",
+    "title": "الخدمات الشائعة",
+    "description": "البنوك وأجهزة الصراف الآلي ونقاط الخدمات المصرفية عبر الهاتف المحمول وتأجير السيارات وخدمات الحافلات.",
+    "category": {
+      "bank": "جميع البنوك في {siteName}",
+      "bkash_point": "نقطة خدمة بكاش",
+      "robi_point": "نقطة خدمة روبي الدائرية",
+      "atm_booth": "كشك الصراف الآلي",
+      "car_rental": "خدمة تأجير السيارات",
+      "ekota_bus_service": "خدمة حافلات إيكوتا",
+      "dhaka_homna_bus_service": "خدمة حافلات دكا-هومنا"
+    }
+  },
+  "shopsPage": {
+    "metaTitle": "المتاجر",
+    "metaDescription": "دليل المتاجر في {siteName} - داخل سوق أو بشكل مستقل، تصفح حسب الفئة.",
+    "title": "المتاجر",
+    "description": "جميع المتاجر في الأوبازيلا - داخل سوق محدد أو بشكل مستقل، تصفح حسب الفئة.",
+    "allCategories": "الكل",
+    "emptyState": "لا توجد متاجر مدرجة في هذه الفئة بعد.",
+    "addShop": "أضف متجرًا",
+    "independentBadge": "متجر مستقل"
+  },
+  "govtInfoPage": {
+    "metaTitle": "جهات الاتصال الحكومية",
+    "metaDescription": "معلومات الاتصال لمكتب UNO ومجلس الأوبازيلا ومكاتب مجلس الاتحاد في {siteName}.",
+    "title": "جهات الاتصال الحكومية",
+    "description": "عناوين وأرقام هواتف مكتب UNO ومجلس الأوبازيلا ومجلس الاتحاد ومركز الشرطة.",
+    "emptyState": "لم تتم إضافة أي معلومات عن المكاتب بعد.",
+    "phoneLabel": "الهاتف: {phone}",
+    "emailLabel": "البريد الإلكتروني: {email}",
+    "category": {
+      "uno_office": "مكتب UNO",
+      "upazila_parishad": "مجلس الأوبازيلا",
+      "union_parishad": "مجلس الاتحاد",
+      "police_station": "مركز الشرطة",
+      "other": "أخرى"
+    }
   },
   "exchangePage": {
     "metaTitle": "التبادل — البيع والشراء محليًا",
@@ -314,7 +483,9 @@
     "description": "منتجات من المتاجر والأعمال في المنطقة الفرعية — تصفّح، ثم راسل البائع أو اتصل به.",
     "productsCount": "{count, plural, zero {لا منتجات} one {منتج واحد} two {منتجان} few {# منتجات} many {# منتجًا} other {# منتج}}",
     "listProduct": "أضف منتجًا",
-    "emptyMessage": "لا توجد منتجات مدرجة بعد. يمكن للأعمال المحلية إضافة منتجاتها."
+    "emptyMessage": "لا توجد منتجات مدرجة بعد. يمكن للأعمال المحلية إضافة منتجاتها.",
+    "buySellTab": "بيع وشراء",
+    "exchangeTab": "تبادل"
   },
   "marketsList": {
     "metaTitle": "السوق الأسبوعي",
@@ -328,11 +499,35 @@
     "title": "المستشفيات والأطباء",
     "description": "قوائم حكومية وخاصة وعيادات مع معلومات التواصل."
   },
+  "ambulancePage": {
+    "metaTitle": "أرقام الإسعاف",
+    "metaDescription": "أرقام خط الإسعاف الساخن لمستشفيات {siteName}.",
+    "title": "أرقام الإسعاف",
+    "description": "أرقام خط الإسعاف الساخن لمستشفيات المنطقة.",
+    "empty": "لم تتم إضافة أي أرقام إسعاف حتى الآن.",
+    "call": "اتصل"
+  },
+  "schoolsList": {
+    "metaTitle": "المدارس والمؤسسات التعليمية",
+    "metaDescription": "دليل المدارس الحكومية والخاصة والمدارس الدينية والكليات لـ {siteName}.",
+    "title": "المدارس والمؤسسات التعليمية",
+    "description": "قوائم حكومية وخاصة ومدارس دينية وكليات مع معلومات التواصل."
+  },
   "placesList": {
     "metaTitle": "الأماكن",
     "metaDescription": "الأماكن السياحية والحدائق والمعالم البارزة في {siteName}.",
     "title": "الأماكن",
-    "description": "الأماكن السياحية والحدائق والمعالم البارزة الجديرة بالزيارة."
+    "description": "الأماكن السياحية والحدائق والمعالم البارزة الجديرة بالزيارة.",
+    "category": {
+      "tourist": "مكان سياحي",
+      "restaurant": "مطعم",
+      "park": "حديقة",
+      "historical": "أثري",
+      "religious": "ديني",
+      "natural": "طبيعي",
+      "shop": "متجر مميز",
+      "other": "أخرى"
+    }
   },
   "sellShop": {
     "metaTitle": "إضافة متجر",
@@ -422,7 +617,9 @@
     "anyCondition": "أي حالة",
     "conditionNew": "جديد",
     "conditionUsed": "مستعمل",
-    "allCategories": "الكل"
+    "allCategories": "الكل",
+    "locationAriaLabel": "الموقع",
+    "anyLocation": "كل المواقع"
   },
   "listingImage": {
     "noPhoto": "لا توجد صورة"
@@ -456,6 +653,10 @@
     "primaryRole": "الدور الأساسي",
     "scopedRoles": "الأدوار المحدودة النطاق",
     "status": "الحالة",
+    "hospitalPermission": "مدير المستشفى",
+    "schoolPermission": "مدير المدرسة",
+    "granted": "ممنوح",
+    "notGranted": "غير ممنوح",
     "noUsers": "لا يوجد مستخدمون بعد.",
     "you": "أنت",
     "verified": "موثّق"
@@ -509,6 +710,8 @@
     "generalDescription": "اسم الموقع، رابطه، والوصف الافتراضي — تُستخدم في عناوين الصفحات ومحركات البحث ومعاينات الروابط المشتركة.",
     "smsTitle": "بوابة الرسائل النصية (رمز التحقق للهاتف)",
     "smsDescription": "يعرض وضع العرض التجريبي (الطرفية) رمز التحقق على الشاشة بدلاً من إرسال رسالة نصية. بدّل إلى http بمجرد حصولك على حساب مزود الخدمة.",
+    "authTitle": "تسجيل الدخول برمز التحقق للهاتف",
+    "authDescription": "يتيح لك تعطيل تسجيل الدخول برمز التحقق للهاتف على مستوى الموقع. تعطيله يخفي علامة تبويب رمز التحقق في صفحة تسجيل الدخول ويمنع تسجيلات الدخول الجديدة بالرمز - تسجيل الدخول بكلمة المرور وGoogle وFacebook، وكذلك التسجيل/تأكيد الهاتف برمز التحقق، لا يتأثران.",
     "captchaTitle": "Cloudflare Turnstile",
     "captchaDescription": "حماية من الروبوتات في خطوة طلب رمز التحقق. اختياري.",
     "facebookTitle": "تسجيل الدخول عبر فيسبوك",

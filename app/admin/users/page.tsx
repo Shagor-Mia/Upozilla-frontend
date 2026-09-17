@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
 
 import { AdminTable } from "@/components/admin/AdminTable";
+import { HospitalPermissionToggle } from "@/components/admin/HospitalPermissionToggle";
+import { SchoolPermissionToggle } from "@/components/admin/SchoolPermissionToggle";
 import { ScopedRoles } from "@/components/admin/ScopedRoles";
 import { UserRoleSelect } from "@/components/admin/UserRoleSelect";
 import { UserStatusToggle } from "@/components/admin/UserStatusToggle";
@@ -29,7 +31,15 @@ export default async function AdminUsersPage() {
   const roles = session?.roles ?? [];
   const canManageRoles = hasPermission(roles, "roles.manage");
   const canManageUsers = hasPermission(roles, "users.manage");
-  const headings = [t("name"), t("contact"), t("primaryRole"), t("scopedRoles"), t("status")];
+  const headings = [
+    t("name"),
+    t("contact"),
+    t("primaryRole"),
+    t("scopedRoles"),
+    t("status"),
+    t("hospitalPermission"),
+    t("schoolPermission"),
+  ];
 
   return (
     <div>
@@ -69,6 +79,26 @@ export default async function AdminUsersPage() {
                   <StatusChip status={user.status} />
                   {canManageUsers && !isSelf && <UserStatusToggle userId={user.id} status={user.status} />}
                 </div>
+              </TableCell>
+              <TableCell>
+                {canManageUsers ? (
+                  <HospitalPermissionToggle userId={user.id} granted={user.can_manage_hospital} />
+                ) : (
+                  <StatusChip
+                    status={user.can_manage_hospital ? "active" : "suspended"}
+                    label={user.can_manage_hospital ? t("granted") : t("notGranted")}
+                  />
+                )}
+              </TableCell>
+              <TableCell>
+                {canManageUsers ? (
+                  <SchoolPermissionToggle userId={user.id} granted={user.can_manage_school} />
+                ) : (
+                  <StatusChip
+                    status={user.can_manage_school ? "active" : "suspended"}
+                    label={user.can_manage_school ? t("granted") : t("notGranted")}
+                  />
+                )}
               </TableCell>
             </TableRow>
           );

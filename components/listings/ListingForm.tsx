@@ -193,7 +193,7 @@ export function ListingForm({
 
       <details className="rounded-xl border border-border-muted p-4">
         <summary className="text-label-sm cursor-pointer text-on-surface">{t("mapPinLabel")}</summary>
-        <div className="mt-3 grid grid-cols-2 gap-4">
+        <div className="mt-3 grid grid-cols-1 gap-4 sm:grid-cols-2">
           <div className="space-y-1.5">
             <label htmlFor="latitude" className={labelClass}>
               {t("latitudeLabel")}

@@ -118,7 +118,7 @@ export default async function HomePage() {
 
   return (
     <div>
-      <section className="relative flex min-h-[60vh] w-full items-center justify-center overflow-hidden border-b border-muted md:min-h-[70vh]">
+      <section className="relative -mt-[78px] flex min-h-[60vh] w-full items-center justify-center overflow-hidden border-b border-muted md:min-h-[70vh]">
         <UpazilaHero3D />
         <div className="relative z-10 mx-auto mt-16 flex w-full max-w-3xl flex-col items-center space-y-8 px-6 text-center md:mt-0">
           <div className="space-y-2">
@@ -240,7 +240,7 @@ export default async function HomePage() {
 
       <ContentSection
         title={t("marketplaceHighlights")}
-        viewAllHref="/exchange"
+        viewAllHref="/marketplace"
         empty={listings.length === 0}
         viewAllLabel={t("viewAll")}
         emptyLabel={t("emptySection")}
@@ -270,14 +270,14 @@ export default async function HomePage() {
 
       <ContentSection
         title={t("businessDirectory")}
-        viewAllHref="/business"
+        viewAllHref="/popular-services"
         empty={businesses.length === 0}
         viewAllLabel={t("viewAll")}
         emptyLabel={t("emptySection")}
       >
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {businesses.map((business) => (
-            <Link key={business.id} href={`/business/${business.slug}`}>
+            <Link key={business.id} href={`/popular-services/${business.slug}`}>
               <Card className="h-full shadow-card transition-shadow hover:shadow-md">
                 <CardHeader>
                   <CardTitle className="text-headline-md">{business.name}</CardTitle>

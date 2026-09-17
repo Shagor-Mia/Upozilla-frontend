@@ -105,7 +105,7 @@ export default async function RootLayout({ children }: LayoutProps<"/">) {
           <PublicSettingsProvider value={publicSettings}>
             <AuthModalProvider>
               <SiteHeader />
-              <main className="flex-1">{children}</main>
+              <main className="flex-1 pt-[78px]">{children}</main>
               <SiteFooter />
               <ConsentBanner />
               <GTMContainer />

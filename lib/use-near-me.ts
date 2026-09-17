@@ -5,10 +5,10 @@ import { ClientApiError, clientApi } from "@/lib/client-api";
 import type { Paginated } from "@/types/api";
 
 /** Public directory lists that accept `?lat&lng&radius_km` (Phase 3 "near me"). */
-export type DirectoryEntity = "hospitals" | "markets" | "places" | "businesses";
+export type DirectoryEntity = "hospitals" | "schools" | "markets" | "places" | "businesses";
 
-// hospitals/markets/places return Paginated<T>; businesses still returns a plain array.
-const PAGINATED_ENTITIES = new Set<DirectoryEntity>(["hospitals", "markets", "places"]);
+// hospitals/schools/markets/places return Paginated<T>; businesses still returns a plain array.
+const PAGINATED_ENTITIES = new Set<DirectoryEntity>(["hospitals", "schools", "markets", "places"]);
 
 export type NearMeRadius = 5 | 10 | 25;
 export const NEAR_ME_RADII: readonly NearMeRadius[] = [5, 10, 25];

@@ -99,8 +99,12 @@ export function ModerationQueue() {
           {items.map((item) => {
             const busy = busyId === item.id;
             const isReport = item.entity_type === "listing_report";
-            const href = item.listing
-              ? listingHref(item.listing.listing_type, item.entity_id)
+            // Places have no id-based public route (the public page is
+            // slug-based, /places/{slug}, and the queue only knows the id) -
+            // skip the preview link rather than construct a broken one.
+            const listingType = item.listing?.listing_type;
+            const href = listingType && listingType !== "place"
+              ? listingHref(listingType, item.entity_id)
               : item.report
                 ? listingHref(item.report.listing_type, item.report.listing_id)
                 : null;

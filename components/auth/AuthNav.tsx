@@ -120,20 +120,14 @@ export function AuthNav() {
   }
 
   if (!session) {
-    // Same split as the signed-in branch below: inline on `sm:`+ where two
-    // buttons plus the language switcher and menu trigger fit, collapsed into
-    // this drawer's trigger below `sm` where they didn't - live-measured,
-    // "Sign in" + "Register" + the language switcher + the hamburger trigger
-    // overflow a 320px viewport by ~35px with no fallback here, the one gap
-    // the mobile-responsiveness-audit fix (see SignedInActions above) missed.
+    // Same split as the signed-in branch below: inline on `sm:`+, collapsed
+    // into this drawer's trigger below `sm`. Only "Sign in" is shown here by
+    // design - Register is reached via the login page's own link instead.
     return (
       <>
         <div className="hidden items-center justify-end gap-1.5 sm:flex">
-          <Button render={<Link href="/login" />} nativeButton={false} variant="ghost" size="sm">
+          <Button render={<Link href="/login" />} nativeButton={false} size="sm">
             Sign in
-          </Button>
-          <Button render={<Link href="/register" />} nativeButton={false} size="sm">
-            Register
           </Button>
         </div>
         <Sheet open={menuOpen} onOpenChange={setMenuOpen} swipeDirection="right">
@@ -156,17 +150,9 @@ export function AuthNav() {
               <Button
                 render={<Link href="/login" onClick={() => setMenuOpen(false)} />}
                 nativeButton={false}
-                variant="ghost"
                 className="justify-start"
               >
                 Sign in
-              </Button>
-              <Button
-                render={<Link href="/register" onClick={() => setMenuOpen(false)} />}
-                nativeButton={false}
-                className="justify-start"
-              >
-                Register
               </Button>
             </div>
           </SheetContent>

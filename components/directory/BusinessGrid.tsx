@@ -15,7 +15,7 @@ export function BusinessGrid({ businesses }: { businesses: Business[] }) {
       entity="businesses"
       initialItems={businesses}
       renderItem={(business) => (
-        <Link href={`/business/${business.slug}`}>
+        <Link href={`/popular-services/${business.slug}`}>
           <Card className="h-full shadow-card transition-shadow hover:shadow-md">
             <CardHeader>
               <CardTitle className="flex flex-wrap items-center gap-2 text-headline-md">

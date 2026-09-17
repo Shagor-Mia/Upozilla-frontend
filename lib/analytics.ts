@@ -33,7 +33,7 @@ export type AnalyticsEvent =
   | { event: "signup"; method: "password" | "otp" | "facebook" | "google" }
   | {
       event: "near_me_used";
-      entity: "hospitals" | "markets" | "places" | "businesses";
+      entity: "hospitals" | "schools" | "markets" | "places" | "businesses";
       radius_km: number;
     };
 

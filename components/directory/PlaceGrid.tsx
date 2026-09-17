@@ -1,5 +1,6 @@
 "use client";
 
+import { useTranslations } from "next-intl";
 import Link from "next/link";
 
 import { DirectoryList } from "@/components/directory/DirectoryList";
@@ -9,6 +10,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import type { Place } from "@/types/api";
 
 export function PlaceGrid({ places }: { places: Place[] }) {
+  const t = useTranslations("placesList.category");
   return (
     <DirectoryList
       entity="places"
@@ -19,9 +21,7 @@ export function PlaceGrid({ places }: { places: Place[] }) {
             <CardHeader>
               <CardTitle className="text-headline-md">{place.name}</CardTitle>
               <div className="flex flex-wrap items-center gap-2">
-                <Badge variant="secondary" className="capitalize">
-                  {place.category}
-                </Badge>
+                <Badge variant="secondary">{t(place.category)}</Badge>
                 {place.distance_km != null && <DistanceChip km={place.distance_km} />}
               </div>
             </CardHeader>

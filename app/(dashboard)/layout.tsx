@@ -1,9 +1,10 @@
-import { Heart, MessageSquare, Package, Sparkles, Tag, UserCircle } from "lucide-react";
+import { Heart, MapPin, MessageSquare, Package, Sparkles, Tag, UserCircle } from "lucide-react";
 import Link from "next/link";
 
 const LINKS = [
   { href: "/account", label: "Account", icon: UserCircle },
   { href: "/account/listings", label: "My listings", icon: Package },
+  { href: "/account/places", label: "My places", icon: MapPin },
   { href: "/account/favorites", label: "Saved", icon: Heart },
   { href: "/messages", label: "Messages", icon: MessageSquare },
   { href: "/ask", label: "Ask AI", icon: Sparkles },

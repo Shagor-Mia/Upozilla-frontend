@@ -29,11 +29,20 @@ export type Service = Schemas["ServiceResponse"];
 export type HospitalType = Schemas["HospitalType"];
 export type Hospital = WithDistance<Schemas["HospitalResponse"]>;
 export type Doctor = Schemas["DoctorResponse"];
+export type AmbulanceHospital = Schemas["AmbulanceHospitalResponse"];
+export type HospitalAdmin = Schemas["HospitalAdminResponse"];
+
+export type SchoolType = Schemas["SchoolType"];
+export type School = WithDistance<Schemas["SchoolResponse"]>;
+export type SchoolAdmin = Schemas["SchoolAdminResponse"];
 
 export type MarketType = Schemas["MarketType"];
 export type Market = WithDistance<Schemas["MarketResponse"]>;
 
 export type Business = WithDistance<Schemas["BusinessResponse"]>;
+
+export type GovtOfficeCategory = Schemas["GovtOfficeCategory"];
+export type GovtOffice = Schemas["GovtOfficeResponse"];
 
 export type NewsArticle = Schemas["NewsArticleResponse"];
 export type NewsArticleDetail = Schemas["NewsArticleDetailResponse"];
@@ -142,10 +151,11 @@ export type Conversation = Schemas["ConversationResponse"];
 export type ModerationEntityType = Schemas["ModerationEntityType"];
 export type ModerationQueueStatus = Schemas["ModerationQueueStatus"];
 // `listing_type` on both snapshots is a plain string on the backend - narrowed back here.
-// QueueListingSnapshot also covers shops (moderation/service.py's `_listing_snapshot`),
-// which don't participate in the report flow, so QueueReportSnapshot stays exchange/marketplace only.
+// QueueListingSnapshot also covers shops and places (moderation/service.py's
+// `_listing_snapshot_from`), neither of which participates in the report flow, so
+// QueueReportSnapshot stays exchange/marketplace only.
 export type QueueListingSnapshot = Omit<Schemas["QueueListingSnapshot"], "listing_type"> & {
-  listing_type: ListingType | "shop";
+  listing_type: ListingType | "shop" | "place";
 };
 export type QueueReportSnapshot = Omit<Schemas["QueueReportSnapshot"], "listing_type"> & {
   listing_type: ListingType;
@@ -176,7 +186,7 @@ export type TestConnectionResult = Schemas["TestConnectionResponse"];
 
 // Rebuilt against this file's narrowed aliases (distance_km, discriminated listing_type)
 // rather than the raw generated schema, for the same reason as FavoritesResponse above.
-// --- Shops inside Markets ----------------------------------------------------------
+// --- Shops (standalone or inside a Market) ------------------------------------------
 
 export type ShopCategory = Schemas["ShopCategoryResponse"];
 export type Shop = Schemas["ShopResponse"];

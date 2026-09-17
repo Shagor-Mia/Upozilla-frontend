@@ -12,6 +12,7 @@ import { FacebookLoginButton } from "@/components/auth/FacebookLoginButton";
 import { GoogleLoginButton } from "@/components/auth/GoogleLoginButton";
 import { FormField } from "@/components/auth/FormField";
 import { OtpForm } from "@/components/auth/OtpForm";
+import { usePublicSettings } from "@/components/settings/PublicSettingsProvider";
 import { Button } from "@/components/ui/button";
 import { notifyAuthChanged } from "@/lib/auth-events";
 
@@ -33,7 +34,9 @@ export function LoginForm({
 }) {
   const t = useTranslations("auth");
   const router = useRouter();
-  const [method, setMethod] = useState<AuthMethod>("otp");
+  const otpLoginEnabled = usePublicSettings().otp_login_enabled;
+  const methods: AuthMethod[] = otpLoginEnabled ? ["otp", "password"] : ["password"];
+  const [method, setMethod] = useState<AuthMethod>(otpLoginEnabled ? "otp" : "password");
   const [error, setError] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
 
@@ -93,9 +96,9 @@ export function LoginForm({
         </>
       }
     >
-      <AuthMethodTabs value={method} onChange={setMethod} />
+      <AuthMethodTabs value={method} onChange={setMethod} methods={methods} />
 
-      {method === "otp" ? (
+      {method === "otp" && otpLoginEnabled ? (
         <OtpForm purpose="login" next={next} submitLabel={t("signIn")} onSuccess={onSuccess} />
       ) : (
         <form onSubmit={handleSubmit} className="space-y-4">

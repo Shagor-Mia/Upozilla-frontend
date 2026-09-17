@@ -26,10 +26,14 @@ export function listingQuery(searchParams: ListingSearchParams): Record<string, 
     sort: pick(searchParams, "sort"),
     condition: pick(searchParams, "condition"),
     page: pick(searchParams, "page"),
+    location_id: pick(searchParams, "location_id"),
   };
 }
 
-/** Same values keyed the way the URL uses them (for Pagination links). */
+/** Same values keyed the way the URL uses them (for Pagination links). `type`
+ * ("exchange" or unset for marketplace) isn't a backend param - it just picks
+ * which of getMarketplaceProducts/getExchangeListings the merged /marketplace
+ * page calls - so it's kept out of listingQuery() and only carried here. */
 export function listingUrlParams(searchParams: ListingSearchParams): Record<string, string | undefined> {
   return {
     q: pick(searchParams, "q"),
@@ -37,6 +41,8 @@ export function listingUrlParams(searchParams: ListingSearchParams): Record<stri
     sort: pick(searchParams, "sort"),
     condition: pick(searchParams, "condition"),
     page: pick(searchParams, "page"),
+    location_id: pick(searchParams, "location_id"),
+    type: pick(searchParams, "type"),
   };
 }
 

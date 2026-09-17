@@ -22,7 +22,7 @@ export async function generateMetadata(props: PageProps<"/shops/[id]">): Promise
   const [shop, { site_name }] = await Promise.all([getShop(id), getPublicSettings()]);
   if (!shop) return {};
 
-  const description = shop.description ?? `${shop.name} — ${shop.market_name} — ${site_name}`;
+  const description = shop.description ?? `${shop.name} — ${shop.market_name ?? shop.category_name} — ${site_name}`;
 
   return {
     title: shop.name,
@@ -52,10 +52,12 @@ export default async function ShopDetailPage(props: PageProps<"/shops/[id]">) {
     description: shop.description ?? undefined,
     image: shop.images[0] ?? undefined,
     telephone: shop.contact_phone ?? undefined,
-    branchOf: {
-      "@type": "LocalBusiness",
-      name: shop.market_name,
-    },
+    branchOf: shop.market_name
+      ? {
+          "@type": "LocalBusiness",
+          name: shop.market_name,
+        }
+      : undefined,
   };
 
   return (
@@ -63,9 +65,11 @@ export default async function ShopDetailPage(props: PageProps<"/shops/[id]">) {
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
       <Badge variant="secondary">{shop.category_name}</Badge>
       <h1 className="mt-3 text-display-hero-mobile text-on-surface">{shop.name}</h1>
-      <Link href={`/markets/${shop.market_id}`} className="text-label-sm text-primary hover:underline">
-        {shop.market_name}
-      </Link>
+      {shop.market_id && shop.market_name && (
+        <Link href={`/markets/${shop.market_id}`} className="text-label-sm text-primary hover:underline">
+          {shop.market_name}
+        </Link>
+      )}
 
       {shop.description && <p className="mt-4 text-body-md text-on-surface-variant">{shop.description}</p>}
 

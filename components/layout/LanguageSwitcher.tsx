@@ -33,7 +33,7 @@ export function LanguageSwitcher() {
       onChange={handleChange}
       disabled={pending}
       aria-label="Language"
-      className="text-label-sm rounded-lg border-2 border-border-muted bg-surface px-2 py-1.5 text-on-surface transition-colors focus:border-primary focus:outline-none disabled:opacity-60"
+      className="text-label-sm min-h-10 rounded-lg border-2 border-border-muted bg-surface px-2 py-1.5 text-on-surface transition-colors focus:border-primary focus:outline-none disabled:opacity-60"
     >
       {OPTIONS.map((option) => (
         <option key={option.value} value={option.value}>

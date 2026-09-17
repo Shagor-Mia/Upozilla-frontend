@@ -39,13 +39,15 @@ export default async function VillageDetailPage(props: PageProps<"/unions/[id]/v
   const [places, representatives] = await Promise.all([
     apiGet<Paginated<Place>>("/places", {
       revalidateSeconds: 300,
-      searchParams: { location_id: villageId, page_size: "60" },
+      searchParams: { location_id: villageId, featured_only: "true", page_size: "60" },
     }),
     apiGet<Paginated<Representative>>("/representatives", {
       revalidateSeconds: 300,
       searchParams: { location_id: villageId },
     }),
   ]);
+  const popularPlaces = places.items.filter((place) => place.category !== "shop");
+  const popularShops = places.items.filter((place) => place.category === "shop");
 
   return (
     <div className="mx-auto max-w-[1280px] px-4 py-8 md:px-12">
@@ -53,6 +55,21 @@ export default async function VillageDetailPage(props: PageProps<"/unions/[id]/v
         ← ইউনিয়নে ফিরে যান
       </Link>
       <h1 className="mt-2 text-headline-lg text-on-surface">{village.name}</h1>
+
+      <div className="mt-3 flex flex-wrap gap-2">
+        <Link
+          href={`/marketplace?location_id=${villageId}`}
+          className="text-label-sm rounded-full border border-border-muted bg-surface-container-lowest px-4 py-1.5 text-on-surface-variant transition-colors hover:border-primary hover:text-primary"
+        >
+          এই গ্রামের মার্কেটপ্লেস দেখুন
+        </Link>
+        <Link
+          href={`/markets?location_id=${villageId}`}
+          className="text-label-sm rounded-full border border-border-muted bg-surface-container-lowest px-4 py-1.5 text-on-surface-variant transition-colors hover:border-primary hover:text-primary"
+        >
+          এই গ্রামের হাট-বাজার দেখুন
+        </Link>
+      </div>
 
       {representatives.items.length > 0 && (
         <div className="mt-6">
@@ -76,11 +93,11 @@ export default async function VillageDetailPage(props: PageProps<"/unions/[id]/v
 
       <div className="mt-8">
         <h2 className="text-headline-md text-on-surface">জনপ্রিয় জায়গা</h2>
-        {places.items.length === 0 ? (
-          <p className="mt-4 text-body-md text-on-surface-variant">এই গ্রামে এখনও কোনো জায়গা যুক্ত করা হয়নি।</p>
+        {popularPlaces.length === 0 ? (
+          <p className="mt-4 text-body-md text-on-surface-variant">এই গ্রামে এখনও কোনো জনপ্রিয় জায়গা যুক্ত করা হয়নি।</p>
         ) : (
           <div className="mt-4 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-            {places.items.map((place) => (
+            {popularPlaces.map((place) => (
               <Link key={place.id} href={`/places/${place.slug}`}>
                 <Card className="h-full shadow-card transition-shadow hover:shadow-md">
                   <CardHeader>
@@ -92,6 +109,30 @@ export default async function VillageDetailPage(props: PageProps<"/unions/[id]/v
                   {place.description && (
                     <CardContent className="line-clamp-2 text-body-md text-on-surface-variant">
                       {place.description}
+                    </CardContent>
+                  )}
+                </Card>
+              </Link>
+            ))}
+          </div>
+        )}
+      </div>
+
+      <div className="mt-8">
+        <h2 className="text-headline-md text-on-surface">জনপ্রিয় দোকান</h2>
+        {popularShops.length === 0 ? (
+          <p className="mt-4 text-body-md text-on-surface-variant">এই গ্রামে এখনও কোনো জনপ্রিয় দোকান যুক্ত করা হয়নি।</p>
+        ) : (
+          <div className="mt-4 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            {popularShops.map((shop) => (
+              <Link key={shop.id} href={`/places/${shop.slug}`}>
+                <Card className="h-full shadow-card transition-shadow hover:shadow-md">
+                  <CardHeader>
+                    <CardTitle className="text-headline-md">{shop.name}</CardTitle>
+                  </CardHeader>
+                  {shop.description && (
+                    <CardContent className="line-clamp-2 text-body-md text-on-surface-variant">
+                      {shop.description}
                     </CardContent>
                   )}
                 </Card>

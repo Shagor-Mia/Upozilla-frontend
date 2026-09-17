@@ -3,10 +3,10 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 
 import { Badge } from "@/components/ui/badge";
-import { Card, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { apiGet } from "@/lib/api-client";
 import { getPublicSettings } from "@/lib/public-settings";
-import type { Location, Paginated, Representative } from "@/types/api";
+import type { Location, Paginated, Place, Representative, Service } from "@/types/api";
 
 const POSITION_LABEL: Record<string, string> = {
   chairman: "চেয়ারম্যান",
@@ -43,17 +43,39 @@ export default async function UnionDetailPage(props: PageProps<"/unions/[id]">) 
   const union = await getUnion(id);
   if (!union) notFound();
 
-  const [villages, representatives] = await Promise.all([
+  const [villages, representatives, services, places] = await Promise.all([
     apiGet<Location[]>("/locations", { revalidateSeconds: 3600, searchParams: { type: "village", parent_id: id } }),
     apiGet<Paginated<Representative>>("/representatives", {
       revalidateSeconds: 300,
       searchParams: { location_id: id },
     }),
+    apiGet<Paginated<Service>>("/services", { revalidateSeconds: 300, searchParams: { location_id: id } }),
+    apiGet<Paginated<Place>>("/places", {
+      revalidateSeconds: 300,
+      searchParams: { location_id: id, featured_only: "true", page_size: "60" },
+    }),
   ]);
+  const popularPlaces = places.items.filter((place) => place.category !== "shop");
+  const popularShops = places.items.filter((place) => place.category === "shop");
 
   return (
     <div className="mx-auto max-w-[1280px] px-4 py-8 md:px-12">
       <h1 className="text-headline-lg text-on-surface">{union.name}</h1>
+
+      <div className="mt-3 flex flex-wrap gap-2">
+        <Link
+          href={`/marketplace?location_id=${id}`}
+          className="text-label-sm rounded-full border border-border-muted bg-surface-container-lowest px-4 py-1.5 text-on-surface-variant transition-colors hover:border-primary hover:text-primary"
+        >
+          এই ইউনিয়নের মার্কেটপ্লেস দেখুন
+        </Link>
+        <Link
+          href={`/markets?location_id=${id}`}
+          className="text-label-sm rounded-full border border-border-muted bg-surface-container-lowest px-4 py-1.5 text-on-surface-variant transition-colors hover:border-primary hover:text-primary"
+        >
+          এই ইউনিয়নের হাট-বাজার দেখুন
+        </Link>
+      </div>
 
       {representatives.items.length > 0 && (
         <div className="mt-6">
@@ -70,6 +92,61 @@ export default async function UnionDetailPage(props: PageProps<"/unions/[id]">) 
                 </Badge>
                 {rep.phone && <p className="mt-2 text-body-md text-on-surface-variant">{rep.phone}</p>}
               </div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {services.items.length > 0 && (
+        <div className="mt-8">
+          <h2 className="text-headline-md text-on-surface">সেবা</h2>
+          <div className="mt-3 grid grid-cols-1 gap-3 sm:grid-cols-2">
+            {services.items.map((service) => (
+              <Card key={service.id} className="shadow-card">
+                <CardHeader>
+                  <CardTitle className="text-headline-md">{service.name}</CardTitle>
+                </CardHeader>
+                {(service.office_name || service.office_contact) && (
+                  <CardContent className="space-y-1 text-body-md text-on-surface-variant">
+                    {service.office_name && <p>{service.office_name}</p>}
+                    {service.office_contact && <p>{service.office_contact}</p>}
+                  </CardContent>
+                )}
+              </Card>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {popularPlaces.length > 0 && (
+        <div className="mt-8">
+          <h2 className="text-headline-md text-on-surface">জনপ্রিয় জায়গা</h2>
+          <div className="mt-3 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            {popularPlaces.map((place) => (
+              <Link key={place.id} href={`/places/${place.slug}`}>
+                <Card className="h-full shadow-card transition-shadow hover:shadow-md">
+                  <CardHeader>
+                    <CardTitle className="text-headline-md">{place.name}</CardTitle>
+                  </CardHeader>
+                </Card>
+              </Link>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {popularShops.length > 0 && (
+        <div className="mt-8">
+          <h2 className="text-headline-md text-on-surface">জনপ্রিয় দোকান</h2>
+          <div className="mt-3 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            {popularShops.map((shop) => (
+              <Link key={shop.id} href={`/places/${shop.slug}`}>
+                <Card className="h-full shadow-card transition-shadow hover:shadow-md">
+                  <CardHeader>
+                    <CardTitle className="text-headline-md">{shop.name}</CardTitle>
+                  </CardHeader>
+                </Card>
+              </Link>
             ))}
           </div>
         </div>

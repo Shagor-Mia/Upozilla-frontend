@@ -5,64 +5,136 @@ import Link from "next/link";
 import { AuthNav } from "@/components/auth/AuthNav";
 import { LanguageSwitcher } from "@/components/layout/LanguageSwitcher";
 import { MobileNav } from "@/components/layout/MobileNav";
+import { NavLink } from "@/components/layout/NavLink";
+import { PlacesNavDropdown } from "@/components/layout/PlacesNavDropdown";
+import { getHospitals, getMarkets, getSchools, getUnions } from "@/lib/locations";
 import { getPublicSettings } from "@/lib/public-settings";
 
 export async function SiteHeader() {
-  const [t, { site_name }] = await Promise.all([getTranslations("nav"), getPublicSettings()]);
+  const [
+    t,
+    tCategory,
+    tBusinessCategory,
+    tSell,
+    tMarkets,
+    tHospitals,
+    tSchools,
+    { site_name },
+    unions,
+    markets,
+    hospitals,
+    schools,
+  ] = await Promise.all([
+    getTranslations("nav"),
+    getTranslations("placesList.category"),
+    getTranslations("businessPage.category"),
+    getTranslations("sell"),
+    getTranslations("marketsList"),
+    getTranslations("hospitalsList"),
+    getTranslations("schoolsList"),
+    getPublicSettings(),
+    getUnions(),
+    getMarkets(),
+    getHospitals(),
+    getSchools(),
+  ]);
+  const placeCategories = [
+    { href: "/places?category=tourist", label: tCategory("tourist") },
+    { href: "/places?category=restaurant", label: tCategory("restaurant") },
+    { href: "/places?category=park", label: tCategory("park") },
+    { href: "/places?category=historical", label: tCategory("historical") },
+    { href: "/places?category=religious", label: tCategory("religious") },
+    { href: "/places?category=natural", label: tCategory("natural") },
+    { href: "/places?category=shop", label: tCategory("shop") },
+  ];
+  const popularServices = [
+    { href: "/popular-services?category=bank", label: tBusinessCategory("bank", { siteName: site_name }) },
+    { href: "/popular-services?category=bkash_point", label: tBusinessCategory("bkash_point") },
+    { href: "/popular-services?category=robi_point", label: tBusinessCategory("robi_point") },
+    { href: "/popular-services?category=atm_booth", label: tBusinessCategory("atm_booth") },
+    { href: "/popular-services?category=car_rental", label: tBusinessCategory("car_rental") },
+    { href: "/popular-services?category=ekota_bus_service", label: tBusinessCategory("ekota_bus_service") },
+    { href: "/popular-services?category=dhaka_homna_bus_service", label: tBusinessCategory("dhaka_homna_bus_service") },
+  ];
+  // "ইউনিয়ন" enumerates every union, and "হাট-বাজার" every market - both lists
+  // are small (a handful of markets/unions per upazila) so listing them all in
+  // the header is fine here, unlike places/services which have many entries
+  // and use fixed category filters instead.
+  const unionLinks = unions.map((union) => ({ href: `/unions/${union.id}`, label: union.name }));
+  const marketLinks = [
+    { href: "/markets", label: tMarkets("title") },
+    ...markets.map((market) => ({ href: `/markets/${market.id}`, label: market.name })),
+  ];
+  const hospitalLinks = [
+    { href: "/hospitals", label: tHospitals("title") },
+    { href: "/hospitals/ambulance", label: t("ambulance") },
+    ...hospitals.map((hospital) => ({ href: `/hospitals/${hospital.id}`, label: hospital.name })),
+  ];
+  const schoolLinks = [
+    { href: "/schools", label: tSchools("title") },
+    ...schools.map((school) => ({ href: `/schools/${school.id}`, label: school.name })),
+  ];
   const navLinks = [
-    { href: "/places", label: t("places") },
-    { href: "/services", label: t("services") },
-    { href: "/markets", label: t("bazaar") },
-    { href: "/unions", label: t("unions") },
+    { href: "/places", label: t("places"), children: placeCategories },
+    { href: "/popular-services", label: t("services"), children: popularServices },
+    { href: "/markets", label: t("bazaar"), children: marketLinks },
+    { href: "/unions", label: t("unions"), children: unionLinks.length > 0 ? unionLinks : undefined },
     { href: "/marketplace", label: t("marketplace") },
-    { href: "/exchange", label: t("exchange") },
-    { href: "/hospitals", label: t("hospitals") },
-    { href: "/business", label: t("business") },
+    { href: "/hospitals", label: t("hospitals"), children: hospitalLinks },
+    { href: "/shops", label: t("shops") },
+    { href: "/schools", label: t("schools"), children: schoolLinks },
     { href: "/news", label: t("news") },
-    { href: "/faq", label: t("faq") },
   ];
 
   return (
-    <header className="sticky top-0 z-40 w-full border-b border-muted bg-surface shadow-sm">
-      <div className="mx-auto flex h-16 max-w-[1280px] items-center justify-between gap-3 px-4 md:px-6">
-        <Link href="/" className="flex shrink-0 items-center gap-2 text-primary">
+    <header className="fixed top-3 z-40 inset-x-4 mx-auto max-w-[1184px] rounded-2xl border border-border-muted/60 bg-surface/80 shadow-lg backdrop-blur-md md:inset-x-12">
+      <div className="mx-auto flex h-16 max-w-[1184px] items-center justify-between gap-3 px-4 md:px-6">
+        <Link href="/" className="-m-2 flex shrink-0 items-center gap-2 p-2 text-primary">
           <Landmark size={28} strokeWidth={1.75} />
-          {/* Full wordmark only from `xl` (1280px) up - between that and `lg`
-              (1024px, where the nav below turns on) it's icon-only, because
-              live measurement showed the wordmark alone (~280px) was the
-              single biggest fixed cost in the row, bigger than the nav or the
-              language/auth cluster. Freeing that space (plus the tighter
-              gap/padding/font-size below) is what lets all 10 nav links fit
-              inline starting at 1024px instead of needing a hamburger on
-              every laptop screen. IMPORTANT: this row is capped at
-              `max-w-[1280px]`, so past a 1280px viewport it never gets any
-              wider - there is no larger breakpoint where "loosening back up"
-              the gap/padding/font-size below would have any real extra room
-              to spend; every px added back to those is a px taken from the
-              nav with nothing gained. (Verified live: adding `2xl:` versions
-              of those back re-created the exact same internal-scrollbar
-              overflow this whole fix is for.) They must stay at their tight
-              values unconditionally from `lg` up. */}
           <span className="hidden text-headline-md font-bold xl:inline">{site_name}</span>
         </Link>
-        {/* Live-measured (bn/en/ar) with this tight gap/padding/font-size held
-            constant everywhere from `lg` up (wordmark included from `xl`):
-            English, the widest locale, always kept at least a 34px real
-            margin. `min-w-0` + `overflow-x-auto` stay as a defensive fallback
-            only: if a future label edit erodes that margin, the nav scrolls
-            internally instead of forcing the header (and the whole page)
-            wider than the viewport again, the way the untamed version of
-            this row did. */}
-        <nav className="hidden min-w-0 items-center gap-2.5 overflow-x-auto lg:flex">
-          {navLinks.map((link) => (
-            <Link
-              key={link.href}
-              href={link.href}
-              className="text-[13px] leading-5 font-medium whitespace-nowrap text-on-surface-variant transition-colors hover:text-primary"
-            >
-              {link.label}
-            </Link>
-          ))}
+        {/* All 10 links at comfortable size/spacing/hover only have real room
+            from `xl` (1280px) up - cramming them into `lg` (1024-1279px) forced
+            either a tiny unreadable font or an internal scrollbar. Below `xl`,
+            MobileNav's hamburger covers the same links instead. */}
+        <nav className="hidden items-center gap-1 xl:flex">
+          {navLinks.map((link) =>
+            link.children ? (
+              <PlacesNavDropdown
+                key={link.href}
+                href={link.href}
+                label={link.label}
+                items={link.children}
+                addHref={
+                  link.href === "/places"
+                    ? "/sell/place"
+                    : link.href === "/popular-services"
+                      ? "/sell/business"
+                      : link.href === "/schools"
+                        ? "/sell/school"
+                        : undefined
+                }
+                addLabel={
+                  link.href === "/places"
+                    ? tSell("placeTitle")
+                    : link.href === "/popular-services"
+                      ? tSell("businessTitle")
+                      : link.href === "/schools"
+                        ? tSell("schoolTitle")
+                        : undefined
+                }
+              />
+            ) : (
+              <NavLink
+                key={link.href}
+                href={link.href}
+                className="text-label-sm rounded-lg px-3 py-2 whitespace-nowrap text-on-surface-variant transition-colors hover:bg-surface-container hover:text-primary"
+                activeClassName="bg-surface-container text-primary"
+              >
+                {link.label}
+              </NavLink>
+            )
+          )}
         </nav>
         <div className="flex shrink-0 items-center gap-2">
           <LanguageSwitcher />

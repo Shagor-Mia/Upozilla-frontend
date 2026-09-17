@@ -19,8 +19,13 @@ export async function ListingDetail({ listing }: { listing: Listing }) {
   const t = await getTranslations("listingDetail");
   const negotiable = listing.listing_type === "exchange" && listing.is_negotiable;
   const gallery = listing.images.slice(1, 5);
-  const listHref = listing.listing_type === "exchange" ? "/exchange" : "/marketplace";
+  // Exchange is a tab on /marketplace (?type=exchange), not its own route.
+  const listHref = listing.listing_type === "exchange" ? "/marketplace?type=exchange" : "/marketplace";
   const listLabel = listing.listing_type === "exchange" ? t("exchange") : t("marketplace");
+  const categoryHref =
+    listing.listing_type === "exchange"
+      ? `/marketplace?type=exchange&category=${listing.category_id}`
+      : `/marketplace?category=${listing.category_id}`;
 
   return (
     <article className="mx-auto max-w-[1280px] px-4 py-8 md:px-12">
@@ -36,7 +41,7 @@ export async function ListingDetail({ listing }: { listing: Listing }) {
           {listLabel}
         </Link>
         <span aria-hidden="true">/</span>
-        <Link href={`${listHref}?category=${listing.category_id}`} className="hover:text-primary">
+        <Link href={categoryHref} className="hover:text-primary">
           {listing.category_name}
         </Link>
       </nav>
@@ -95,7 +100,7 @@ export async function ListingDetail({ listing }: { listing: Listing }) {
                   {listing.listing_type === "marketplace" && listing.business_slug && (
                     <>
                       {" · "}
-                      <Link href={`/business/${listing.business_slug}`} className="text-primary hover:underline">
+                      <Link href={`/popular-services/${listing.business_slug}`} className="text-primary hover:underline">
                         {listing.business_name}
                       </Link>
                     </>

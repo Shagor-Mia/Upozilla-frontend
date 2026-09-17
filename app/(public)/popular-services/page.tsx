@@ -12,12 +12,16 @@ export async function generateMetadata(): Promise<Metadata> {
   return {
     title: t("metaTitle"),
     description: t("metaDescription", { siteName: site_name }),
-    alternates: { canonical: "/business" },
+    alternates: { canonical: "/popular-services" },
   };
 }
 
-export default async function BusinessPage() {
-  const [businesses, t] = await Promise.all([apiGet<Business[]>("/businesses"), getTranslations("businessPage")]);
+export default async function PopularServicesPage(props: PageProps<"/popular-services">) {
+  const { category } = await props.searchParams;
+  const [businesses, t] = await Promise.all([
+    apiGet<Business[]>("/businesses", { searchParams: { category: typeof category === "string" ? category : undefined } }),
+    getTranslations("businessPage"),
+  ]);
 
   return (
     <div className="mx-auto max-w-[1280px] px-4 py-8 md:px-12">

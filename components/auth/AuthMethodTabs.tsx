@@ -9,15 +9,21 @@ export type AuthMethod = "password" | "otp";
 export function AuthMethodTabs({
   value,
   onChange,
+  methods = ["otp", "password"],
 }: {
   value: AuthMethod;
   onChange: (method: AuthMethod) => void;
+  /** Admin can disable OTP login site-wide (dashboard > settings); callers
+   * pass the surviving subset here instead of always rendering both tabs. */
+  methods?: AuthMethod[];
 }) {
   const t = useTranslations("auth");
-  const tabs: { key: AuthMethod; label: string }[] = [
+  const allTabs: { key: AuthMethod; label: string }[] = [
     { key: "otp", label: t("otpTab") },
     { key: "password", label: t("passwordTab") },
   ];
+  const tabs = allTabs.filter((tab) => methods.includes(tab.key));
+  if (tabs.length <= 1) return null;
   return (
     <div role="tablist" className="mb-6 grid grid-cols-2 rounded-xl bg-surface-container p-1">
       {tabs.map((tab) => (

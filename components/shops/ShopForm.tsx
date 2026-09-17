@@ -2,7 +2,7 @@
 
 import { useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";
-import { type FormEvent } from "react";
+import { type FormEvent, useState } from "react";
 
 import { useAuthModal } from "@/components/auth/AuthModalProvider";
 import { ImageUploader } from "@/components/common/ImageUploader";
@@ -17,17 +17,32 @@ interface Option {
   label: string;
 }
 
-/** "সেল করুন > দোকান" - shopkeeper self-submits a shop inside a market, same
- * moderation-queue lifecycle as marketplace/exchange listings.
+/** "সেল করুন > দোকান" - shopkeeper self-submits a shop, either as a stall
+ * inside a market or standalone anywhere in the upazila, same moderation
+ * queue lifecycle as marketplace/exchange listings.
  *
  * The page is public - anyone can open and fill this form signed out.
  * Submitting while unauthenticated or phone-unverified opens the in-place
  * auth modal and resubmits the same payload once that's resolved. */
-export function ShopForm({ markets, categories }: { markets: Option[]; categories: ShopCategory[] }) {
+export function ShopForm({
+  markets,
+  categories: initialCategories,
+  locations,
+}: {
+  markets: Option[];
+  categories: ShopCategory[];
+  locations: Option[];
+}) {
   const t = useTranslations("shopForm");
   const router = useRouter();
   const { handleAuthError } = useAuthModal();
   const { run, pending: submitting, error } = useApiMutation(t("errorGeneric"));
+  const [marketId, setMarketId] = useState("");
+  const [categories, setCategories] = useState(initialCategories);
+  const [categoryId, setCategoryId] = useState("");
+  const [addingCategory, setAddingCategory] = useState(false);
+  const [newCategoryName, setNewCategoryName] = useState("");
+  const { run: runAddCategory, pending: addingCategoryPending } = useApiMutation(t("errorGeneric"));
 
   async function submit(payload: Record<string, unknown>) {
     await run(() => clientApi.post<Shop>("shops", payload), {
@@ -49,12 +64,27 @@ export function ShopForm({ markets, categories }: { markets: Option[]; categorie
       .filter(Boolean);
 
     void submit({
-      market_id: text("market_id"),
-      category_id: text("category_id"),
+      market_id: marketId || null,
+      location_id: marketId ? null : text("location_id"),
+      category_id: categoryId,
       name: text("name"),
       description: text("description") || null,
       contact_phone: text("contact_phone") || null,
       images,
+    });
+  }
+
+  async function handleAddCategory() {
+    const name = newCategoryName.trim();
+    if (!name) return;
+    await runAddCategory(() => clientApi.post<ShopCategory>("shops/categories", { name_bn: name }), {
+      onSuccess: (category) => {
+        setCategories((prev) => [...prev, category]);
+        setCategoryId(category.id);
+        setNewCategoryName("");
+        setAddingCategory(false);
+      },
+      onError: (err) => handleAuthError(err, handleAddCategory),
     });
   }
 
@@ -70,12 +100,16 @@ export function ShopForm({ markets, categories }: { markets: Option[]; categorie
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
         <div className="space-y-1.5">
           <label htmlFor="market_id" className={labelClass}>
-            {t("marketLabel")} <span className="text-error">*</span>
+            {t("marketLabel")}
           </label>
-          <select id="market_id" name="market_id" required defaultValue="" className={selectClass}>
-            <option value="" disabled>
-              {t("selectPlaceholder")}
-            </option>
+          <select
+            id="market_id"
+            name="market_id"
+            value={marketId}
+            onChange={(event) => setMarketId(event.target.value)}
+            className={selectClass}
+          >
+            <option value="">{t("noMarketOption")}</option>
             {markets.map((market) => (
               <option key={market.value} value={market.value}>
                 {market.label}
@@ -87,7 +121,14 @@ export function ShopForm({ markets, categories }: { markets: Option[]; categorie
           <label htmlFor="category_id" className={labelClass}>
             {t("categoryLabel")} <span className="text-error">*</span>
           </label>
-          <select id="category_id" name="category_id" required defaultValue="" className={selectClass}>
+          <select
+            id="category_id"
+            name="category_id"
+            required
+            value={categoryId}
+            onChange={(event) => setCategoryId(event.target.value)}
+            className={selectClass}
+          >
             <option value="" disabled>
               {t("selectPlaceholder")}
             </option>
@@ -97,8 +138,66 @@ export function ShopForm({ markets, categories }: { markets: Option[]; categorie
               </option>
             ))}
           </select>
+          {addingCategory ? (
+            <div className="flex items-center gap-2">
+              <input
+                type="text"
+                value={newCategoryName}
+                onChange={(event) => setNewCategoryName(event.target.value)}
+                placeholder={t("newCategoryNameLabel")}
+                minLength={2}
+                maxLength={100}
+                className={inputClass}
+              />
+              <Button
+                type="button"
+                size="sm"
+                disabled={Boolean(addingCategoryPending) || newCategoryName.trim().length < 2}
+                onClick={handleAddCategory}
+                className="rounded-lg"
+              >
+                {t("addCategoryConfirm")}
+              </Button>
+              <button
+                type="button"
+                onClick={() => {
+                  setAddingCategory(false);
+                  setNewCategoryName("");
+                }}
+                className="text-label-sm text-on-surface-variant hover:text-primary"
+              >
+                {t("addCategoryCancel")}
+              </button>
+            </div>
+          ) : (
+            <button
+              type="button"
+              onClick={() => setAddingCategory(true)}
+              className="text-label-sm text-primary hover:underline"
+            >
+              {t("addCategory")}
+            </button>
+          )}
         </div>
       </div>
+
+      {!marketId && (
+        <div className="space-y-1.5">
+          <label htmlFor="location_id" className={labelClass}>
+            {t("locationLabel")} <span className="text-error">*</span>
+          </label>
+          <select id="location_id" name="location_id" required defaultValue="" className={selectClass}>
+            <option value="" disabled>
+              {t("selectPlaceholder")}
+            </option>
+            {locations.map((location) => (
+              <option key={location.value} value={location.value}>
+                {location.label}
+              </option>
+            ))}
+          </select>
+        </div>
+      )}
 
       <div className="space-y-1.5">
         <label htmlFor="contact_phone" className={labelClass}>

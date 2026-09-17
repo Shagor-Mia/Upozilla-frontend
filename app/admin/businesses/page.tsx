@@ -65,7 +65,7 @@ export default async function AdminBusinessesPage() {
         {rows.map((business) => (
           <TableRow key={business.id}>
             <TableCell>
-              <Link href={`/business/${business.slug}`} className="hover:text-primary hover:underline">
+              <Link href={`/popular-services/${business.slug}`} className="hover:text-primary hover:underline">
                 {business.name}
               </Link>
               <div className="text-metadata capitalize text-on-surface-variant">{business.category}</div>
