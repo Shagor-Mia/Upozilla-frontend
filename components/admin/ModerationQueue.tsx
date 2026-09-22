@@ -52,12 +52,20 @@ export function ModerationQueue() {
     load();
   }, [load]);
 
-  async function review(item: ModerationQueueItem, decision: "approve" | "reject") {
-    await run(() => clientApi.post(`moderation/queue/${item.id}/review`, { decision, note: notes[item.id]?.trim() || null }), {
-      key: item.id,
-      fallbackError: "Could not save the decision",
-      onSuccess: load,
-    });
+  async function review(item: ModerationQueueItem, decision: "approve" | "reject", favoredParty?: "employer" | "worker") {
+    await run(
+      () =>
+        clientApi.post(`moderation/queue/${item.id}/review`, {
+          decision,
+          note: notes[item.id]?.trim() || null,
+          favored_party: favoredParty ?? null,
+        }),
+      {
+        key: item.id,
+        fallbackError: "Could not save the decision",
+        onSuccess: load,
+      }
+    );
   }
 
   return (
@@ -99,6 +107,7 @@ export function ModerationQueue() {
           {items.map((item) => {
             const busy = busyId === item.id;
             const isReport = item.entity_type === "listing_report";
+            const isContractDispute = item.entity_type === "contract_dispute";
             // Places have no id-based public route (the public page is
             // slug-based, /places/{slug}, and the queue only knows the id) -
             // skip the preview link rather than construct a broken one.
@@ -160,6 +169,25 @@ export function ModerationQueue() {
                         {item.report.details && <p className="text-body-md text-on-surface-variant">{item.report.details}</p>}
                       </>
                     )}
+                    {item.contract && (
+                      <>
+                        <p className="text-body-md font-semibold text-on-surface">{item.contract.title}</p>
+                        <p className="text-metadata text-on-surface-variant">
+                          {item.contract.employer_name ?? "?"} (employer) vs {item.contract.worker_name ?? "?"} (worker) ·{" "}
+                          {formatPrice(item.contract.payment_amount, item.contract.currency)} ·{" "}
+                          {item.contract.problem_category.replace(/_/g, " ")}
+                        </p>
+                        <p className="text-body-md text-on-surface-variant">{item.contract.problem_description}</p>
+                        {item.contract.problem_images.length > 0 && (
+                          <div className="mt-1 flex flex-wrap gap-2">
+                            {item.contract.problem_images.map((url) => (
+                              // eslint-disable-next-line @next/next/no-img-element -- remote pasted URLs, not a local asset
+                              <img key={url} src={url} alt="" className="h-16 w-16 rounded-lg border border-border-muted object-cover" />
+                            ))}
+                          </div>
+                        )}
+                      </>
+                    )}
                     {item.review_note && (
                       <p className="text-metadata text-on-surface-variant">Note: {item.review_note}</p>
                     )}
@@ -175,13 +203,29 @@ export function ModerationQueue() {
                       aria-label="Review note"
                       className={cn(inputClass, "sm:flex-1")}
                     />
-                    <div className="flex gap-2">
-                      <Button disabled={busy} onClick={() => review(item, "approve")}>
-                        {isReport ? "Uphold & hide listing" : "Approve"}
-                      </Button>
-                      <Button variant="destructive" disabled={busy} onClick={() => review(item, "reject")}>
-                        {isReport ? "Dismiss" : "Reject"}
-                      </Button>
+                    <div className="flex flex-wrap gap-2">
+                      {isContractDispute ? (
+                        <>
+                          <Button disabled={busy} onClick={() => review(item, "approve", "employer")}>
+                            Favor employer
+                          </Button>
+                          <Button disabled={busy} onClick={() => review(item, "approve", "worker")}>
+                            Favor worker
+                          </Button>
+                          <Button variant="destructive" disabled={busy} onClick={() => review(item, "reject")}>
+                            Dismiss
+                          </Button>
+                        </>
+                      ) : (
+                        <>
+                          <Button disabled={busy} onClick={() => review(item, "approve")}>
+                            {isReport ? "Uphold & hide listing" : "Approve"}
+                          </Button>
+                          <Button variant="destructive" disabled={busy} onClick={() => review(item, "reject")}>
+                            {isReport ? "Dismiss" : "Reject"}
+                          </Button>
+                        </>
+                      )}
                     </div>
                   </div>
                 )}

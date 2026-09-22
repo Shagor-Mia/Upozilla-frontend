@@ -23,6 +23,9 @@ const STATUS_TONE: Record<string, Tone> = {
   open: "warning",
   upheld: "error",
   dismissed: "neutral",
+  cancelled: "neutral",
+  disputed: "error",
+  completed: "success",
 };
 
 /** DESIGN.md status chips: colour is always paired with the text label

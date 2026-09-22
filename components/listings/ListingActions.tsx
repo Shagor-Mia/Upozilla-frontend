@@ -1,7 +1,7 @@
 "use client";
 
 import { useTranslations } from "next-intl";
-import { Flag, Heart, MessageSquare, Phone } from "lucide-react";
+import { FileSignature, Flag, Heart, MessageSquare, Phone } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useState, type FormEvent } from "react";
@@ -33,6 +33,7 @@ export function ListingActions({
   listingType,
   listingId,
   sellerId,
+  sellerName,
   initialFavoritesCount,
 }: {
   listingType: ListingType;
@@ -40,6 +41,7 @@ export function ListingActions({
   /** Null once the seller's account has been deleted and this listing
    * anonymized (backend SET-NULLs `seller_user_id` rather than cascading). */
   sellerId: string | null;
+  sellerName: string;
   initialFavoritesCount: number;
 }) {
   const t = useTranslations("listingActions");
@@ -213,6 +215,16 @@ export function ListingActions({
           )}
         </div>
       </TrustGate>
+
+      {sellerId && (
+        <Link
+          href={`/contracts/new?workerId=${encodeURIComponent(sellerId)}&workerName=${encodeURIComponent(sellerName)}`}
+          className="text-label-sm inline-flex items-center gap-1.5 text-primary hover:underline"
+        >
+          <FileSignature size={16} />
+          {t("createContract")}
+        </Link>
+      )}
 
       <div className="flex flex-wrap items-center gap-2">
         <Button

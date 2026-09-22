@@ -1,4 +1,4 @@
-import { Heart, MapPin, MessageSquare, Package, Sparkles, Tag, UserCircle } from "lucide-react";
+import { FileSignature, Heart, MapPin, MessageSquare, Package, Sparkles, Tag, UserCircle } from "lucide-react";
 import Link from "next/link";
 
 const LINKS = [
@@ -7,6 +7,7 @@ const LINKS = [
   { href: "/account/places", label: "My places", icon: MapPin },
   { href: "/account/favorites", label: "Saved", icon: Heart },
   { href: "/messages", label: "Messages", icon: MessageSquare },
+  { href: "/contracts", label: "Contracts", icon: FileSignature },
   { href: "/ask", label: "Ask AI", icon: Sparkles },
   { href: "/sell", label: "Sell", icon: Tag },
 ];

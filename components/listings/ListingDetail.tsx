@@ -121,6 +121,7 @@ export async function ListingDetail({ listing }: { listing: Listing }) {
                 listingType={listing.listing_type}
                 listingId={listing.id}
                 sellerId={listing.seller_user_id}
+                sellerName={listing.seller.full_name}
                 initialFavoritesCount={listing.favorites_count}
               />
             </div>

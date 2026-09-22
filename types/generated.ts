@@ -583,23 +583,6 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/api/v1/schools/mine": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /** Get My School */
-        get: operations["get_my_school_api_v1_schools_mine_get"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
     "/api/v1/schools": {
         parameters: {
             query?: never;
@@ -612,6 +595,23 @@ export interface paths {
         put?: never;
         /** Create School */
         post: operations["create_school_api_v1_schools_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/schools/mine": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get My School */
+        get: operations["get_my_school_api_v1_schools_mine_get"];
+        put?: never;
+        post?: never;
         delete?: never;
         options?: never;
         head?: never;
@@ -3779,6 +3779,7 @@ export interface components {
             review_note: string | null;
             listing?: components["schemas"]["QueueListingSnapshot"] | null;
             report?: components["schemas"]["QueueReportSnapshot"] | null;
+            contract?: components["schemas"]["QueueContractSnapshot"] | null;
         };
         /**
          * ModerationQueueStatus
@@ -4461,6 +4462,30 @@ export interface components {
             gtm_id: string | null;
             /** Mapbox Token */
             mapbox_token: string | null;
+        };
+        /** QueueContractSnapshot */
+        QueueContractSnapshot: {
+            /**
+             * Contract Id
+             * Format: uuid
+             */
+            contract_id: string;
+            /** Title */
+            title: string;
+            /** Employer Name */
+            employer_name: string | null;
+            /** Worker Name */
+            worker_name: string | null;
+            /** Payment Amount */
+            payment_amount: number;
+            /** Currency */
+            currency: string;
+            /** Problem Category */
+            problem_category: string;
+            /** Problem Description */
+            problem_description: string;
+            /** Problem Images */
+            problem_images: string[];
         };
         /** QueueListingSnapshot */
         QueueListingSnapshot: {
@@ -6641,26 +6666,6 @@ export interface operations {
             };
         };
     };
-    get_my_school_api_v1_schools_mine_get: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Successful Response */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["SchoolAdminResponse"] | null;
-                };
-            };
-        };
-    };
     list_schools_api_v1_schools_get: {
         parameters: {
             query?: {
@@ -6733,6 +6738,26 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    get_my_school_api_v1_schools_mine_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SchoolAdminResponse"] | null;
                 };
             };
         };

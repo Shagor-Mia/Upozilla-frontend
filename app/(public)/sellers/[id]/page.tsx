@@ -1,5 +1,6 @@
-import { Star } from "lucide-react";
+import { FileSignature, Star } from "lucide-react";
 import type { Metadata } from "next";
+import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getTranslations } from "next-intl/server";
 
@@ -59,6 +60,13 @@ export default async function SellerProfilePage(props: PageProps<"/sellers/[id]"
     <div className="mx-auto max-w-[1280px] px-4 py-8 md:px-12">
       <div className="rounded-xl border border-border-muted bg-surface-container-lowest p-6 shadow-card">
         <SellerCard seller={seller} linkToProfile={false} />
+        <Link
+          href={`/contracts/new?workerId=${encodeURIComponent(seller.id)}&workerName=${encodeURIComponent(seller.full_name)}`}
+          className="text-label-sm mt-3 inline-flex items-center gap-1.5 text-primary hover:underline"
+        >
+          <FileSignature size={16} />
+          {t("createContract")}
+        </Link>
         <dl className="mt-6 grid grid-cols-3 gap-4 border-t border-border-muted pt-4">
           <div>
             <dt className="text-metadata text-on-surface-variant">{t("activeListings")}</dt>

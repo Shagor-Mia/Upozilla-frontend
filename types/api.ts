@@ -160,11 +160,17 @@ export type QueueListingSnapshot = Omit<Schemas["QueueListingSnapshot"], "listin
 export type QueueReportSnapshot = Omit<Schemas["QueueReportSnapshot"], "listing_type"> & {
   listing_type: ListingType;
 };
-export type ModerationQueueItem = Omit<Schemas["ModerationQueueItem"], "listing" | "report"> & {
+export type QueueContractSnapshot = Schemas["QueueContractSnapshot"];
+export type ModerationQueueItem = Omit<Schemas["ModerationQueueItem"], "listing" | "report" | "contract"> & {
   listing: QueueListingSnapshot | null;
   report: QueueReportSnapshot | null;
+  contract: QueueContractSnapshot | null;
 };
 export type ModerationStats = Schemas["ModerationStats"];
+// `favored_party` is required alongside `decision: "approve"` only for a CONTRACT_DISPUTE
+// queue item (backend/app/modules/moderation/schemas.py::ModerationReviewBody) - already
+// optional on the generated schema, aliased here just for a shorter import path.
+export type ModerationReviewBody = Schemas["ModerationReviewBody"];
 
 // --- Platform settings (admin-editable integrations) -----------------------------
 
@@ -211,3 +217,40 @@ export type RecommendationsResponse = Omit<
 };
 
 export type AdminSettingItem = Schemas["AdminSettingItem"];
+
+// --- Work Contracts (চুক্তিপত্র) --------------------------------------------------
+
+// `status`/`payment_type`/`method`/`category`/`resolution` are plain strings on the
+// backend's response schemas (only the *Create* payloads use the real enum) - narrowed
+// back here the same way ModerationStatus/AiTier are above, so callers can exhaustively
+// switch on them.
+export type ContractStatus = Schemas["ContractStatus"];
+export type ContractPaymentType = Schemas["ContractPaymentType"];
+export type ContractPaymentMethod = Schemas["ContractPaymentMethod"];
+export type ContractProblemCategory = Schemas["ContractProblemCategory"];
+export type ContractProblemStatus = "open" | "resolved" | "escalated" | "dispute_resolved";
+export type ContractDisputeResolution = "favor_employer" | "favor_worker" | "dismissed";
+
+export type Contract = Omit<Schemas["ContractResponse"], "status" | "payment_type"> & {
+  status: ContractStatus;
+  payment_type: ContractPaymentType;
+};
+export type ContractCreate = Schemas["ContractCreate"];
+
+export type ContractProgress = Schemas["ContractProgressResponse"];
+export type ContractProgressCreate = Schemas["ContractProgressCreate"];
+
+export type ContractPayment = Omit<Schemas["ContractPaymentResponse"], "method" | "status"> & {
+  method: ContractPaymentMethod;
+  status: "pending_confirmation" | "confirmed";
+};
+export type ContractPaymentCreate = Schemas["ContractPaymentCreate"];
+
+export type ContractProblem = Omit<Schemas["ContractProblemResponse"], "category" | "status" | "resolution"> & {
+  category: ContractProblemCategory;
+  status: ContractProblemStatus;
+  resolution: ContractDisputeResolution | null;
+};
+export type ContractProblemCreate = Schemas["ContractProblemCreate"];
+
+export type UserLookup = Schemas["UserLookupResponse"];

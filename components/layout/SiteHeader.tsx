@@ -74,15 +74,31 @@ export async function SiteHeader() {
     { href: "/schools", label: tSchools("title") },
     ...schools.map((school) => ({ href: `/schools/${school.id}`, label: school.name })),
   ];
+  // addHref/addLabel computed once here (not inline in the desktop JSX below)
+  // so both the desktop dropdown and MobileNav's accordion can render the
+  // same "+ add a place/business/school/hospital" shortcut from one source
+  // instead of duplicating this same href-based lookup in two places.
   const navLinks = [
-    { href: "/places", label: t("places"), children: placeCategories },
-    { href: "/popular-services", label: t("services"), children: popularServices },
+    { href: "/places", label: t("places"), children: placeCategories, addHref: "/sell/place", addLabel: tSell("placeTitle") },
+    {
+      href: "/popular-services",
+      label: t("services"),
+      children: popularServices,
+      addHref: "/sell/business",
+      addLabel: tSell("businessTitle"),
+    },
     { href: "/markets", label: t("bazaar"), children: marketLinks },
     { href: "/unions", label: t("unions"), children: unionLinks.length > 0 ? unionLinks : undefined },
     { href: "/marketplace", label: t("marketplace") },
-    { href: "/hospitals", label: t("hospitals"), children: hospitalLinks },
+    {
+      href: "/hospitals",
+      label: t("hospitals"),
+      children: hospitalLinks,
+      addHref: "/sell/hospital",
+      addLabel: tSell("hospitalTitle"),
+    },
     { href: "/shops", label: t("shops") },
-    { href: "/schools", label: t("schools"), children: schoolLinks },
+    { href: "/schools", label: t("schools"), children: schoolLinks, addHref: "/sell/school", addLabel: tSell("schoolTitle") },
     { href: "/news", label: t("news") },
   ];
 
@@ -105,24 +121,8 @@ export async function SiteHeader() {
                 href={link.href}
                 label={link.label}
                 items={link.children}
-                addHref={
-                  link.href === "/places"
-                    ? "/sell/place"
-                    : link.href === "/popular-services"
-                      ? "/sell/business"
-                      : link.href === "/schools"
-                        ? "/sell/school"
-                        : undefined
-                }
-                addLabel={
-                  link.href === "/places"
-                    ? tSell("placeTitle")
-                    : link.href === "/popular-services"
-                      ? tSell("businessTitle")
-                      : link.href === "/schools"
-                        ? tSell("schoolTitle")
-                        : undefined
-                }
+                addHref={link.addHref}
+                addLabel={link.addLabel}
               />
             ) : (
               <NavLink
